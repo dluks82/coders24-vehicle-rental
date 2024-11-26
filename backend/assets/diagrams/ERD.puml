@@ -15,8 +15,21 @@ table(Vehicle) {
     type: VehicleType
     status: VehicleStatus
     dailyRate: BigDecimal
-    createDate: LocalDateTime
-    updateDate: LocalDateTime
+    createdAt: LocalDateTime
+    updatedAt: LocalDateTime
+}
+
+table(Address) {
+    primary_key(id): UUID
+    street: String
+    number: String
+    complement: String
+    neighborhood: String
+    city: String
+    state: String
+    zipCode: String
+    createdAt: LocalDateTime
+    updatedAt: LocalDateTime
 }
 
 table(Agency) {
@@ -25,12 +38,9 @@ table(Agency) {
     document: String
     phone: String
     email: String
-    address: String
-    city: String
-    state: String
-    zipCode: String
-    createDate: LocalDateTime
-    updateDate: LocalDateTime
+    foreign_key(addressId): UUID
+    createdAt: LocalDateTime
+    updatedAt: LocalDateTime
 }
 
 table(Customer) {
@@ -40,12 +50,9 @@ table(Customer) {
     type: CustomerType
     phone: String
     email: String
-    address: String
-    city: String
-    state: String
-    zipCode: String
-    createDate: LocalDateTime
-    updateDate: LocalDateTime
+    foreign_key(addressId): UUID
+    createdAt: LocalDateTime
+    updatedAt: LocalDateTime
 }
 
 table(Rental) {
@@ -62,8 +69,8 @@ table(Rental) {
     totalAmount: BigDecimal
     discount: BigDecimal
     finalAmount: BigDecimal
-    createDate: LocalDateTime
-    updateDate: LocalDateTime
+    createdAt: LocalDateTime
+    updatedAt: LocalDateTime
 }
 
 ' Enums
@@ -76,7 +83,6 @@ enum VehicleType {
 enum VehicleStatus {
     AVAILABLE
     RENTED
-    MAINTENANCE
 }
 
 enum CustomerType {
@@ -100,5 +106,8 @@ Vehicle ..> VehicleType
 Vehicle ..> VehicleStatus
 Customer ..> CustomerType
 Rental ..> RentalStatus
+
+Customer "1" -- "1" Address
+Agency "1" -- "1" Address
 
 @enduml
