@@ -1,0 +1,104 @@
+@startuml Vehicle Rental System ERD
+
+!define table(x) class x << (T,#FFAAAA) >>
+!define primary_key(x) <b>x</b>
+!define foreign_key(x) <u>x</u>
+
+hide methods
+hide stereotypes
+
+' Entities
+table(Vehicle) {
+    primary_key(id): UUID
+    plate: String
+    name: String
+    type: VehicleType
+    status: VehicleStatus
+    dailyRate: BigDecimal
+    createDate: LocalDateTime
+    updateDate: LocalDateTime
+}
+
+table(Agency) {
+    primary_key(id): UUID
+    name: String
+    document: String
+    phone: String
+    email: String
+    address: String
+    city: String
+    state: String
+    zipCode: String
+    createDate: LocalDateTime
+    updateDate: LocalDateTime
+}
+
+table(Customer) {
+    primary_key(id): UUID
+    name: String
+    document: String
+    type: CustomerType
+    phone: String
+    email: String
+    address: String
+    city: String
+    state: String
+    zipCode: String
+    createDate: LocalDateTime
+    updateDate: LocalDateTime
+}
+
+table(Rental) {
+    primary_key(id): UUID
+    foreign_key(vehicleId): UUID
+    foreign_key(customerId): UUID
+    foreign_key(pickupAgencyId): UUID
+    foreign_key(returnAgencyId): UUID
+    startDate: LocalDateTime
+    expectedReturnDate: LocalDateTime
+    actualReturnDate: LocalDateTime
+    status: RentalStatus
+    dailyRate: BigDecimal
+    totalAmount: BigDecimal
+    discount: BigDecimal
+    finalAmount: BigDecimal
+    createDate: LocalDateTime
+    updateDate: LocalDateTime
+}
+
+' Enums
+enum VehicleType {
+    CAR
+    MOTORCYCLE
+    TRUCK
+}
+
+enum VehicleStatus {
+    AVAILABLE
+    RENTED
+    MAINTENANCE
+}
+
+enum CustomerType {
+    INDIVIDUAL
+    CORPORATE
+}
+
+enum RentalStatus {
+    ACTIVE
+    COMPLETED
+    CANCELLED
+}
+
+' Relationships
+Vehicle "1" -- "0..*" Rental
+Customer "1" -- "0..*" Rental
+Agency "1" -- "0..*" Rental : pickup
+Agency "1" -- "0..*" Rental : return
+
+Vehicle ..> VehicleType
+Vehicle ..> VehicleStatus
+Customer ..> CustomerType
+Rental ..> RentalStatus
+
+@enduml

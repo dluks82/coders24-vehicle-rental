@@ -1,0 +1,52 @@
+@startuml Rental Flow
+
+actor Client
+participant RentalController
+participant RentalService
+participant VehicleService
+participant CustomerService
+participant AgencyService
+participant Vehicle
+participant RentalRepository
+participant VehicleRepository
+
+Client -> RentalController: POST /rentals
+activate RentalController
+
+RentalController -> RentalService: createRental(command)
+activate RentalService
+
+RentalService -> VehicleService: findByPlate(plate)
+activate VehicleService
+VehicleService -> VehicleRepository: findByPlate(plate)
+VehicleRepository --> VehicleService: vehicle
+VehicleService --> RentalService: vehicle
+deactivate VehicleService
+
+RentalService -> CustomerService: findByDocument(document)
+activate CustomerService
+CustomerService --> RentalService: customer
+deactivate CustomerService
+
+RentalService -> AgencyService: findByDocument(document)
+activate AgencyService
+AgencyService --> RentalService: agency
+deactivate AgencyService
+
+RentalService -> Vehicle: rent()
+activate Vehicle
+Vehicle --> RentalService: void
+deactivate Vehicle
+
+RentalService -> RentalRepository: save(rental)
+activate RentalRepository
+RentalRepository --> RentalService: rental
+deactivate RentalRepository
+
+RentalService --> RentalController: RentalResponse
+deactivate RentalService
+
+RentalController --> Client: HTTP 201 Created
+deactivate RentalController
+
+@enduml

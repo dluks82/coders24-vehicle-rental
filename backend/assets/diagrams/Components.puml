@@ -1,0 +1,51 @@
+@startuml Components
+
+skinparam componentStyle uml2
+
+package "Presentation Layer" {
+    [VehicleController]
+    [CustomerController]
+    [AgencyController]
+    [RentalController]
+}
+
+package "Application Layer" {
+    [VehicleService]
+    [CustomerService]
+    [AgencyService]
+    [RentalService]
+}
+
+package "Domain Layer" {
+    [Vehicle]
+    [Customer]
+    [Agency]
+    [Rental]
+}
+
+package "Infrastructure Layer" {
+    database "PostgreSQL" {
+        [Vehicle Repository]
+        [Customer Repository]
+        [Agency Repository]
+        [Rental Repository]
+    }
+}
+
+' Vertical connections
+[VehicleController] --> [VehicleService]
+[CustomerController] --> [CustomerService]
+[AgencyController] --> [AgencyService]
+[RentalController] --> [RentalService]
+
+[VehicleService] --> [Vehicle]
+[CustomerService] --> [Customer]
+[AgencyService] --> [Agency]
+[RentalService] --> [Rental]
+
+[Vehicle] --> [Vehicle Repository]
+[Customer] --> [Customer Repository]
+[Agency] --> [Agency Repository]
+[Rental] --> [Rental Repository]
+
+@enduml

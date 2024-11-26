@@ -1,0 +1,129 @@
+@startuml Domain Entities
+
+' Styling
+skinparam classAttributeIconSize 0
+skinparam style strictuml
+skinparam componentStyle uml2
+
+' Enums
+enum VehicleType {
+    CAR
+    MOTORCYCLE
+    TRUCK
+    --
+    +BigDecimal getDailyRate()
+}
+
+enum VehicleStatus {
+    AVAILABLE
+    RENTED
+}
+
+enum CustomerType {
+    INDIVIDUAL
+    CORPORATE
+}
+
+enum RentalStatus {
+    ACTIVE
+    COMPLETED
+    CANCELLED
+}
+
+' Base Entity
+abstract class BaseEntity {
+    -UUID id
+    -LocalDateTime createdAt
+    -LocalDateTime updatedAt
+    --
+    #onCreate()
+    #onUpdate()
+}
+
+' Domain Entities
+class Vehicle {
+    -String plate
+    -String name
+    -VehicleType type
+    -VehicleStatus status
+    -BigDecimal dailyRate
+    --
+    +Vehicle(plate: String, name: String, type: VehicleType)
+    -validatePlate(plate: String)
+    +rent()
+    +returnVehicle()
+}
+
+class Customer {
+    -String name
+    -String document
+    -CustomerType type
+    -String phone
+    -String email
+    -Address address
+    --
+    +Customer(name: String, document: String, type: CustomerType)
+    -validateDocument(document: String)
+}
+
+class Agency {
+    -String name
+    -String document
+    -String phone
+    -String email
+    -Address address
+    --
+    +Agency(name: String, document: String, address: Address)
+    -validateDocument(document: String)
+}
+
+class Rental {
+    -Vehicle vehicle
+    -Customer customer
+    -Agency pickupAgency
+    -Agency returnAgency
+    -LocalDateTime startDate
+    -LocalDateTime expectedReturnDate
+    -LocalDateTime actualReturnDate
+    -RentalStatus status
+    -BigDecimal dailyRate
+    -BigDecimal totalAmount
+    -BigDecimal discount
+    -BigDecimal finalAmount
+    --
+    +Rental(vehicle: Vehicle, customer: Customer, pickupAgency: Agency, returnAgency: Agency)
+    +complete()
+    +cancel()
+    -calculateDiscount()
+    -calculateTotalAmount()
+}
+
+class Address {
+    -String street
+    -String number
+    -String complement
+    -String neighborhood
+    -String city
+    -String state
+    -String zipCode
+}
+
+' Relationships
+BaseEntity <|-- Vehicle
+BaseEntity <|-- Customer
+BaseEntity <|-- Agency
+BaseEntity <|-- Rental
+
+Vehicle --> VehicleType
+Vehicle --> VehicleStatus
+Customer --> CustomerType
+Rental --> RentalStatus
+
+Customer *-- Address
+Agency *-- Address
+
+Rental --> Vehicle
+Rental --> Customer
+Rental --> "2" Agency : pickup/return
+
+@enduml

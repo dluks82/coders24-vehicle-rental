@@ -1,0 +1,190 @@
+@startuml Vehicle Rental System
+
+' Styling
+skinparam classAttributeIconSize 0
+skinparam style strictuml
+skinparam componentStyle uml2
+
+' Enums
+enum VehicleType {
+    CAR
+    MOTORCYCLE
+    TRUCK
+    +BigDecimal getDailyRate()
+}
+
+enum VehicleStatus {
+    AVAILABLE
+    RENTED
+}
+
+enum CustomerType {
+    INDIVIDUAL
+    CORPORATE
+}
+
+enum RentalStatus {
+    ACTIVE
+    COMPLETED
+    CANCELLED
+}
+
+' Entities
+abstract class BaseEntity {
+    -UUID id
+    -LocalDateTime createdAt
+    -LocalDateTime updatedAt
+    #onCreate()
+    #onUpdate()
+}
+
+class Vehicle {
+    -String plate
+    -String name
+    -VehicleType type
+    -VehicleStatus status
+    -BigDecimal dailyRate
+    +Vehicle(plate: String, name: String, type: VehicleType)
+    -validatePlate(plate: String)
+    +rent()
+    +returnVehicle()
+}
+
+class Customer {
+    -String name
+    -String document
+    -CustomerType type
+    -String phone
+    -String email
+    -Address address
+    +Customer(name: String, document: String, type: CustomerType)
+    -validateDocument(document: String)
+}
+
+class Agency {
+    -String name
+    -String document
+    -String phone
+    -String email
+    -Address address
+    +Agency(name: String, document: String, address: Address)
+    -validateDocument(document: String)
+}
+
+class Rental {
+    -Vehicle vehicle
+    -Customer customer
+    -Agency pickupAgency
+    -Agency returnAgency
+    -LocalDateTime startDate
+    -LocalDateTime expectedReturnDate
+    -LocalDateTime actualReturnDate
+    -RentalStatus status
+    -BigDecimal dailyRate
+    -BigDecimal totalAmount
+    -BigDecimal discount
+    -BigDecimal finalAmount
+    +Rental(vehicle: Vehicle, customer: Customer, pickupAgency: Agency, returnAgency: Agency)
+    +complete()
+    +cancel()
+    -calculateDiscount()
+    -calculateTotalAmount()
+}
+
+class Address {
+    -String street
+    -String number
+    -String complement
+    -String neighborhood
+    -String city
+    -String state
+    -String zipCode
+}
+
+' Repositories
+interface VehicleRepository {
+    +findByPlate(plate: String): Optional<Vehicle>
+    +findByNameContainingIgnoreCase(name: String): List<Vehicle>
+    +existsByPlate(plate: String): boolean
+}
+
+interface CustomerRepository {
+    +findByDocument(document: String): Optional<Customer>
+    +findByNameContainingIgnoreCase(name: String): List<Customer>
+    +existsByDocument(document: String): boolean
+}
+
+interface AgencyRepository {
+    +findByDocument(document: String): Optional<Agency>
+    +findByNameContainingIgnoreCase(name: String): List<Agency>
+    +existsByDocument(document: String): boolean
+}
+
+interface RentalRepository {
+    +findByVehicle(vehicle: Vehicle): List<Rental>
+    +findByCustomer(customer: Customer): List<Rental>
+    +findActiveRentalByVehicle(vehicle: Vehicle): Optional<Rental>
+}
+
+' Services
+class VehicleService {
+    -VehicleRepository vehicleRepository
+    +create(command: CreateVehicleCommand): Vehicle
+    +findByPlate(plate: String): Vehicle
+    +findByName(name: String): List<Vehicle>
+    +updateVehicle(id: UUID, command: UpdateVehicleCommand): Vehicle
+}
+
+class CustomerService {
+    -CustomerRepository customerRepository
+    +create(command: CreateCustomerCommand): Customer
+    +findByDocument(document: String): Customer
+    +findByName(name: String): List<Customer>
+    +updateCustomer(id: UUID, command: UpdateCustomerCommand): Customer
+}
+
+class AgencyService {
+    -AgencyRepository agencyRepository
+    +create(command: CreateAgencyCommand): Agency
+    +findByDocument(document: String): Agency
+    +findByName(name: String): List<Agency>
+    +updateAgency(id: UUID, command: UpdateAgencyCommand): Agency
+}
+
+class RentalService {
+    -RentalRepository rentalRepository
+    -VehicleService vehicleService
+    -CustomerService customerService
+    -AgencyService agencyService
+    +createRental(command: CreateRentalCommand): Rental
+    +completeRental(id: UUID): Rental
+    +cancelRental(id: UUID): Rental
+}
+
+' Relationships
+BaseEntity <|-- Vehicle
+BaseEntity <|-- Customer
+BaseEntity <|-- Agency
+BaseEntity <|-- Rental
+
+Vehicle --> VehicleType
+Vehicle --> VehicleStatus
+Customer --> CustomerType
+Rental --> RentalStatus
+
+Customer *-- Address
+Agency *-- Address
+
+Rental --> Vehicle
+Rental --> Customer
+Rental --> "2" Agency
+
+VehicleService --> VehicleRepository
+CustomerService --> CustomerRepository
+AgencyService --> AgencyRepository
+RentalService --> RentalRepository
+RentalService --> VehicleService
+RentalService --> CustomerService
+RentalService --> AgencyService
+
+@enduml

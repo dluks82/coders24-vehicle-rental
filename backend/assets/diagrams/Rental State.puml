@@ -1,0 +1,27 @@
+@startuml Rental States
+
+[*] --> ACTIVE: Create Rental
+
+ACTIVE --> COMPLETED: Return Vehicle\n[vehicle available]
+ACTIVE --> CANCELLED: Cancel Rental
+
+COMPLETED --> [*]
+CANCELLED --> [*]
+
+note right of ACTIVE
+  Vehicle status: RENTED
+  Calculate daily rate
+end note
+
+note right of COMPLETED
+  Vehicle status: AVAILABLE
+  Calculate final amount
+  Apply discounts if applicable
+end note
+
+note right of CANCELLED
+  Vehicle status: AVAILABLE
+  May apply cancellation fees
+end note
+
+@enduml
