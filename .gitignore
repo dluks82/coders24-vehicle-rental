@@ -1,0 +1,48 @@
+# IntelliJ IDEA
+.idea/*
+!.idea/runConfigurations/
+!.idea/encodings.xml
+!.idea/modules.xml
+!.idea/vcs.xml
+
+# Maven (backend)
+backend/target/
+backend/*.iml
+backend/.idea/
+backend/.settings/
+backend/.project
+backend/.classpath
+
+# Java
+backend/*.class
+backend/*.log
+backend/*.ctxt
+backend/.mtj.tmp/
+backend/*.jar
+backend/*.war
+backend/*.nar
+backend/*.ear
+backend/*.zip
+backend/*.tar.gz
+backend/*.rar
+backend/hs_err_pid*
+backend/replay_pid*
+
+# Next.js (frontend)
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/node_modules/
+frontend/.env*.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.pnpm-debug.log*
+frontend/.DS_Store
+frontend/*.pem
+frontend/.vercel
+frontend/.env
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
