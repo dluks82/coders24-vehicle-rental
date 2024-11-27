@@ -22,7 +22,11 @@ class VehicleTest extends BaseUnitTest {
 
     @BeforeEach
     void setUp() {
-        car = new Vehicle("ABC1234", "Civic", VehicleType.CAR);
+        car = Vehicle.builder()
+                .plate("ABC1234")
+                .name("Civic")
+                .type(VehicleType.CAR)
+                .build();
         motorcycle = new Vehicle("XYZ9876", "Harley Davidson", VehicleType.MOTORCYCLE);
         truck = new Vehicle("DEF5678", "Volvo", VehicleType.TRUCK);
     }
@@ -79,7 +83,7 @@ class VehicleTest extends BaseUnitTest {
                             () -> new Vehicle("ABCD123", "Invalid", VehicleType.CAR)),
                     () -> assertThrows(IllegalArgumentException.class,
                             () -> new Vehicle("ABC12345", "Invalid", VehicleType.CAR)),
-                    () -> assertThrows(IllegalArgumentException.class,
+                    () -> assertThrows(NullPointerException.class,
                             () -> new Vehicle(null, "Invalid", VehicleType.CAR))
             );
         }

@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +55,7 @@ public class VehicleService {
         return vehicleRepository
                 .findByNameContainingIgnoreCase(name).stream()
                 .map(VehicleResponseFull::from)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional

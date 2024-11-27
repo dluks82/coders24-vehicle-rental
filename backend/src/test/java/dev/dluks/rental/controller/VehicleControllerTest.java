@@ -16,7 +16,6 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,18 +48,12 @@ class VehicleControllerTest extends BaseControllerTest {
         createCar = new CreateVehicleRequest("ABC1234", "Honda Civic", VehicleType.CAR);
 
         car = new Vehicle("ABC1234", "Honda Civic", VehicleType.CAR);
-        car.setId(UUID.randomUUID());
         car.setStatus(VehicleStatus.AVAILABLE);
         car.setDailyRate(new BigDecimal("150.00"));
-        car.setCreatedAt(LocalDateTime.now());
-        car.setUpdatedAt(LocalDateTime.now());
 
         motorcycle = new Vehicle("XYZ9876", "Honda CB500", VehicleType.MOTORCYCLE);
-        motorcycle.setId(UUID.randomUUID());
         motorcycle.setStatus(VehicleStatus.AVAILABLE);
         motorcycle.setDailyRate(new BigDecimal("100.00"));
-        motorcycle.setCreatedAt(LocalDateTime.now());
-        motorcycle.setUpdatedAt(LocalDateTime.now());
 
         carResponse = VehicleResponseFull.from(car);
         motorcycleResponse = VehicleResponseFull.from(motorcycle);
