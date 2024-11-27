@@ -6,6 +6,7 @@ import dev.dluks.rental.model.vehicle.VehicleType;
 import dev.dluks.rental.repository.VehicleRepository;
 import dev.dluks.rental.service.dto.CreateVehicleRequest;
 import dev.dluks.rental.service.dto.VehicleResponseFull;
+import dev.dluks.rental.support.BaseUnitTest;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +33,7 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Vehicle Service Tests")
 @MockitoSettings(strictness = Strictness.LENIENT)
-class VehicleServiceTest {
+class VehicleServiceTest extends BaseUnitTest {
 
     @Mock
     private VehicleRepository vehicleRepository;
