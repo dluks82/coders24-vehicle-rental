@@ -2,22 +2,22 @@ package dev.dluks.rental.repository;
 
 import dev.dluks.rental.model.vehicle.Vehicle;
 import dev.dluks.rental.model.vehicle.VehicleType;
+import dev.dluks.rental.support.BaseRepositoryTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-@ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class VehicleRepositoryTest {
+@DisplayName("Vehicle Repository Tests")
+class VehicleRepositoryTest extends BaseRepositoryTest {
 
     @Autowired
     private VehicleRepository vehicleRepository;
+
+    @Autowired
+    private TestEntityManager entityManager;
 
     @Test
     @DisplayName("Should save vehicle")
@@ -27,11 +27,14 @@ class VehicleRepositoryTest {
 
         // when
         Vehicle savedVehicle = vehicleRepository.save(vehicle);
+        entityManager.flush();
+        entityManager.clear();
 
         // then
-        assertThat(savedVehicle.getId()).isNotNull();
-        assertThat(savedVehicle.getPlate()).isEqualTo("ABC1234");
-        assertThat(savedVehicle.getName()).isEqualTo("Test Car");
+        Vehicle foundVehicle = entityManager.find(Vehicle.class, savedVehicle.getId());
+        assertThat(foundVehicle).isNotNull();
+        assertThat(foundVehicle.getPlate()).isEqualTo("ABC1234");
+        assertThat(foundVehicle.getName()).isEqualTo("Test Car");
     }
 
     @Test
@@ -39,7 +42,8 @@ class VehicleRepositoryTest {
     void shouldFindVehicleByPlate() {
         // given
         Vehicle vehicle = new Vehicle("XYZ9876", "Test Motorcycle", VehicleType.MOTORCYCLE);
-        vehicleRepository.save(vehicle);
+        entityManager.persist(vehicle);
+        entityManager.flush();
 
         // when
         var found = vehicleRepository.findByPlate("XYZ9876");
@@ -55,8 +59,9 @@ class VehicleRepositoryTest {
         // given
         Vehicle vehicle1 = new Vehicle("ABC1234", "Honda Civic", VehicleType.CAR);
         Vehicle vehicle2 = new Vehicle("XYZ9876", "Honda CB500", VehicleType.MOTORCYCLE);
-        vehicleRepository.save(vehicle1);
-        vehicleRepository.save(vehicle2);
+        entityManager.persist(vehicle1);
+        entityManager.persist(vehicle2);
+        entityManager.flush();
 
         // when
         var found = vehicleRepository.findByNameContainingIgnoreCase("Honda");
