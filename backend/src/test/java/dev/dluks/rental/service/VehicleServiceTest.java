@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,18 +49,12 @@ class VehicleServiceTest {
         createCar = new CreateVehicleRequest("ABC1234", "Honda Civic", VehicleType.CAR);
 
         car = new Vehicle("ABC1234", "Honda Civic", VehicleType.CAR);
-        car.setId(UUID.randomUUID());
         car.setStatus(VehicleStatus.AVAILABLE);
         car.setDailyRate(new BigDecimal("150.00"));
-        car.setCreatedAt(LocalDateTime.now());
-        car.setUpdatedAt(LocalDateTime.now());
 
         motorcycle = new Vehicle("XYZ9876", "Honda CB500", VehicleType.MOTORCYCLE);
-        motorcycle.setId(UUID.randomUUID());
         motorcycle.setStatus(VehicleStatus.AVAILABLE);
         motorcycle.setDailyRate(new BigDecimal("100.00"));
-        motorcycle.setCreatedAt(LocalDateTime.now());
-        motorcycle.setUpdatedAt(LocalDateTime.now());
     }
 
     @Nested
