@@ -1,0 +1,82 @@
+= Vehicle Rental API Documentation
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+
+[[resources]]
+== Resources
+
+[[vehicles]]
+=== Vehicles
+
+[[vehicles-create]]
+==== Create a Vehicle
+A `POST` request creates a new vehicle.
+
+include::{snippets}/vehicle-create/http-request.adoc[]
+
+===== Request Fields
+include::{snippets}/vehicle-create/request-fields.adoc[]
+
+===== Response Fields
+include::{snippets}/vehicle-create/response-fields.adoc[]
+
+===== Example Response
+include::{snippets}/vehicle-create/http-response.adoc[]
+
+[[vehicles-get]]
+==== Get a Vehicle by ID
+A `GET` request retrieves a vehicle by its ID.
+
+include::{snippets}/vehicle-get-by-id/http-request.adoc[]
+
+===== Path Parameters
+include::{snippets}/vehicle-get-by-id/path-parameters.adoc[]
+
+===== Response Fields
+include::{snippets}/vehicle-get-by-id/response-fields.adoc[]
+
+===== Example Response
+include::{snippets}/vehicle-get-by-id/http-response.adoc[]
+
+[[vehicles-search]]
+==== Search Vehicles
+A `GET` request searches for vehicles by name.
+
+include::{snippets}/vehicle-search/http-request.adoc[]
+
+===== Query Parameters
+include::{snippets}/vehicle-search/query-parameters.adoc[]
+
+===== Response Fields
+include::{snippets}/vehicle-search/response-fields.adoc[]
+
+===== Example Response
+include::{snippets}/vehicle-search/http-response.adoc[]
+
+[[vehicles-rent]]
+==== Rent a Vehicle
+A `POST` request to rent a vehicle.
+
+include::{snippets}/vehicle-rent/http-request.adoc[]
+
+===== Path Parameters
+include::{snippets}/vehicle-rent/path-parameters.adoc[]
+
+===== Example Response
+include::{snippets}/vehicle-rent/http-response.adoc[]
+
+[[vehicles-return]]
+==== Return a Vehicle
+A `POST` request to return a rented vehicle.
+
+include::{snippets}/vehicle-return/http-request.adoc[]
+
+===== Path Parameters
+include::{snippets}/vehicle-return/path-parameters.adoc[]
+
+===== Example Response
+include::{snippets}/vehicle-return/http-response.adoc[]
