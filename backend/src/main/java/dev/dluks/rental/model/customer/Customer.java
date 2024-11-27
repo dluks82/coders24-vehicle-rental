@@ -5,10 +5,7 @@ import dev.dluks.rental.model.validator.document.DocumentValidatorStrategy;
 import dev.dluks.rental.model.validator.factory.DocumentValidatorFactory;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -38,7 +35,13 @@ public class Customer extends BaseEntity {
 
 //    private Address address;
 
-    public Customer(String name, String document, CustomerType type, String phone, String email) {
+    @Builder
+    public Customer(
+            @NonNull String name,
+            @NonNull String document,
+            @NonNull CustomerType type,
+            @NonNull String phone,
+            @NonNull String email) {
         this.name = name;
         this.type = type;
         this.phone = phone;
