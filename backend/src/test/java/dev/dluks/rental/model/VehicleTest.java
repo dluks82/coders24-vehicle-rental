@@ -40,6 +40,7 @@ class VehicleTest extends BaseUnitTest {
         void shouldCreateCarWithValidData() {
             // then
             assertAll(
+                    () -> assertNotNull(car.getId()),
                     () -> assertEquals("ABC1234", car.getPlate()),
                     () -> assertEquals("Civic", car.getName()),
                     () -> assertEquals(VehicleType.CAR, car.getType()),

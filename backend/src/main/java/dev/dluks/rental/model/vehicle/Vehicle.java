@@ -2,8 +2,6 @@ package dev.dluks.rental.model.vehicle;
 
 import dev.dluks.rental.model.base.BaseEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -40,7 +38,6 @@ public class Vehicle extends BaseEntity {
             @NonNull String plate,
             @NonNull String name,
             @NonNull VehicleType type) {
-        super();
 
         validadePlate(plate);
 
