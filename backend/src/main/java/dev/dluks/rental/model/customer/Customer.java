@@ -5,6 +5,7 @@ import dev.dluks.rental.model.validator.document.DocumentValidatorStrategy;
 import dev.dluks.rental.model.validator.factory.DocumentValidatorFactory;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "customers")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Customer extends BaseEntity {
 
     @Column(nullable = false)
@@ -56,6 +57,9 @@ public class Customer extends BaseEntity {
     }
 
     private void validateDocument(String document) {
+        if (validator == null) {
+            validator = initializeValidator();
+        }
         if (!validator.isValid(document)) {
             throw new IllegalArgumentException("Invalid document for customer type " + type);
         }
