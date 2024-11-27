@@ -2,9 +2,7 @@ package dev.dluks.rental.model.vehicle;
 
 import dev.dluks.rental.model.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
@@ -12,6 +10,7 @@ import java.util.regex.Pattern;
 @Entity
 @Table(name = "vehicles")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Vehicle extends BaseEntity {
 
@@ -34,6 +33,7 @@ public class Vehicle extends BaseEntity {
     @Column(name = "daily_rate", nullable = false, precision = 10, scale = 2)
     private BigDecimal dailyRate;
 
+    @Builder
     public Vehicle(String plate, String name, VehicleType type) {
         validadePlate(plate);
 
