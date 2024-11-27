@@ -1,24 +1,63 @@
 package dev.dluks.rental.model.customer;
 
 import dev.dluks.rental.model.base.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import dev.dluks.rental.model.validator.document.DocumentValidatorStrategy;
+import dev.dluks.rental.model.validator.factory.DocumentValidatorFactory;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "customers")
+@NoArgsConstructor
 public class Customer extends BaseEntity {
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false, unique = true)
     private String document;
+
     @Enumerated(EnumType.STRING)
     CustomerType type;
+
+    @Column(nullable = false)
     private String phone;
+
+    @Email
+    @Column(nullable = false)
     private String email;
+
+    @Transient
+    private DocumentValidatorStrategy validator;
+
 //    private Address address;
 
+    public Customer(String name, String document, CustomerType type, String phone, String email) {
+        this.name = name;
+        this.type = type;
+        this.phone = phone;
+        this.email = email;
+        this.validator = initializeValidator();
+        setDocument(document);
+    }
 
-    private void validateDocument() {
+    private DocumentValidatorStrategy initializeValidator() {
+        return DocumentValidatorFactory.getValidator(type);
+    }
+
+    public void setDocument(String document) {
+        validateDocument(document);
+        this.document = document;
+    }
+
+    private void validateDocument(String document) {
+        if (!validator.isValid(document)) {
+            throw new IllegalArgumentException("Invalid document for customer type " + type);
+        }
     }
 }
