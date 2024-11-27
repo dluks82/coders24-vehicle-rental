@@ -4,6 +4,7 @@ import dev.dluks.rental.model.vehicle.Vehicle;
 import dev.dluks.rental.model.vehicle.VehicleStatus;
 import dev.dluks.rental.model.vehicle.VehicleType;
 import dev.dluks.rental.support.BaseUnitTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Vehicle")
 class VehicleTest extends BaseUnitTest {
 
+    private Vehicle car;
+    private Vehicle motorcycle;
+    private Vehicle truck;
+
+    @BeforeEach
+    void setUp() {
+        car = new Vehicle("ABC1234", "Civic", VehicleType.CAR);
+        motorcycle = new Vehicle("XYZ9876", "Harley Davidson", VehicleType.MOTORCYCLE);
+        truck = new Vehicle("DEF5678", "Volvo", VehicleType.TRUCK);
+    }
+
     @Nested
     @DisplayName("Creation")
     class Creation {
@@ -22,9 +34,6 @@ class VehicleTest extends BaseUnitTest {
         @Test
         @DisplayName("should create car with valid data")
         void shouldCreateCarWithValidData() {
-            // given & when
-            Vehicle car = new Vehicle("ABC1234", "Civic", VehicleType.CAR);
-
             // then
             assertAll(
                     () -> assertEquals("ABC1234", car.getPlate()),
@@ -38,9 +47,6 @@ class VehicleTest extends BaseUnitTest {
         @Test
         @DisplayName("should create motorcycle with valid data")
         void shouldCreateMotorcycleWithValidData() {
-            // given & when
-            Vehicle motorcycle = new Vehicle("XYZ9876", "Honda CB 500", VehicleType.MOTORCYCLE);
-
             // then
             assertAll(
                     () -> assertEquals("XYZ9876", motorcycle.getPlate()),
@@ -53,9 +59,6 @@ class VehicleTest extends BaseUnitTest {
         @Test
         @DisplayName("should create truck with valid data")
         void shouldCreateTruckWithValidData() {
-            // given & when
-            Vehicle truck = new Vehicle("DEF5678", "Volvo FH", VehicleType.TRUCK);
-
             // then
             assertAll(
                     () -> assertEquals("DEF5678", truck.getPlate()),
@@ -90,7 +93,7 @@ class VehicleTest extends BaseUnitTest {
         @DisplayName("should rent available vehicle")
         void shouldRentAvailableVehicle() {
             // given
-            Vehicle vehicle = new Vehicle("ABC1234", "Civic", VehicleType.CAR);
+            Vehicle vehicle = car;
 
             // when
             vehicle.rent();
@@ -103,7 +106,7 @@ class VehicleTest extends BaseUnitTest {
         @DisplayName("should not rent already rented vehicle")
         void shouldNotRentAlreadyRentedVehicle() {
             // given
-            Vehicle vehicle = new Vehicle("ABC1234", "Civic", VehicleType.CAR);
+            Vehicle vehicle = truck;
             vehicle.rent();
 
             // when & then
@@ -114,7 +117,7 @@ class VehicleTest extends BaseUnitTest {
         @DisplayName("should return rented vehicle")
         void shouldReturnRentedVehicle() {
             // given
-            Vehicle vehicle = new Vehicle("ABC1234", "Civic", VehicleType.CAR);
+            Vehicle vehicle = motorcycle;
             vehicle.rent();
 
             // when
@@ -128,7 +131,7 @@ class VehicleTest extends BaseUnitTest {
         @DisplayName("should not return already available vehicle")
         void shouldNotReturnAlreadyAvailableVehicle() {
             // given
-            Vehicle vehicle = new Vehicle("ABC1234", "Civic", VehicleType.CAR);
+            Vehicle vehicle = car;
 
             // when & then
             assertThrows(IllegalStateException.class, vehicle::returnVehicle);

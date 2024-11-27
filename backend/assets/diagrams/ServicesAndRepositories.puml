@@ -34,7 +34,7 @@ interface RentalRepository {
 class VehicleService {
     -VehicleRepository vehicleRepository
     --
-    +create(command: CreateVehicleCommand): Vehicle
+    +createVehicle(command: CreateVehicleCommand): Vehicle
     +findByPlate(plate: String): Vehicle
     +findByName(name: String): List<Vehicle>
     +updateVehicle(id: UUID, command: UpdateVehicleCommand): Vehicle

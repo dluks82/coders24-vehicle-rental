@@ -194,7 +194,7 @@
             <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>${asciidoctor-maven-plugin.version}</version>
+                <version>2.2.6</version>
                 <executions>
                     <execution>
                         <id>generate-docs</id>
@@ -203,15 +203,14 @@
                             <goal>process-asciidoc</goal>
                         </goals>
                         <configuration>
-                            <backend>html</backend>
+                            <backend>html5</backend>
                             <doctype>book</doctype>
                             <attributes>
                                 <snippets>${project.build.directory}/generated-snippets</snippets>
                                 <source-highlighter>highlight.js</source-highlighter>
-                                <toc>left</toc>
-                                <toclevels>3</toclevels>
-                                <sectlinks>true</sectlinks>
                             </attributes>
+                            <sourceDirectory>src/docs/asciidoc</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/generated-docs</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
