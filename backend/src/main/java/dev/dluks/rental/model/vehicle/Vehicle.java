@@ -34,24 +34,33 @@ public class Vehicle extends BaseEntity {
     private BigDecimal dailyRate;
 
     @Builder
-    public Vehicle(
-            @NonNull String plate,
-            @NonNull String name,
-            @NonNull VehicleType type) {
+    public Vehicle(String plate, String name, VehicleType type) {
 
-        validadePlate(plate);
+        setPlate(plate);
+        setName(name);
+        setType(type);
 
-        this.plate = plate.toUpperCase();
-        this.name = name;
-        this.type = type;
         this.status = VehicleStatus.AVAILABLE;
         this.dailyRate = type.getDailyRate();
     }
 
-    private void validadePlate(String plate) {
-        if (plate == null || !PLATE_PATTERN.matcher(plate.toUpperCase()).matches()) {
-            throw new IllegalArgumentException("Invalid plate format. Must be ABC1234");
+    public void setPlate(String plate) {
+        validadePlate(plate);
+        this.plate = plate.toUpperCase();
+    }
+
+    public void setName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name is required");
         }
+        this.name = name;
+    }
+
+    public void setType(VehicleType type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Type is required");
+        }
+        this.type = type;
     }
 
     public void rent() {
@@ -66,6 +75,15 @@ public class Vehicle extends BaseEntity {
             throw new IllegalStateException("Vehicle is already available");
         }
         status = VehicleStatus.AVAILABLE;
+    }
+
+    private void validadePlate(String plate) {
+        if (plate == null) {
+            throw new IllegalArgumentException("Plate is required");
+        }
+        if (!PLATE_PATTERN.matcher(plate.toUpperCase()).matches()) {
+            throw new IllegalArgumentException("Invalid plate format. Must be ABC1234");
+        }
     }
 
 }

@@ -1,11 +1,12 @@
-package dev.dluks.rental.service;
+package dev.dluks.rental.service.vehicle;
 
 import dev.dluks.rental.model.vehicle.Vehicle;
 import dev.dluks.rental.repository.VehicleRepository;
-import dev.dluks.rental.service.dto.CreateVehicleRequest;
-import dev.dluks.rental.service.dto.VehicleResponseFull;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,16 +21,25 @@ public class VehicleService {
     private final VehicleRepository vehicleRepository;
 
     @Transactional
-    public VehicleResponseFull createVehicle(CreateVehicleRequest request) {
-        if (vehicleRepository.existsByPlate(request.plate())) {
-            throw new IllegalArgumentException("Vehicle with plate " + request.plate() + " already exists");
+    public VehicleResponseFull createVehicle(CreateVehicleRequest dto) {
+        if (vehicleRepository.existsByPlate(dto.getPlate())) {
+            throw new IllegalArgumentException("Vehicle with plate " + dto.getPlate() + " already exists");
         }
         Vehicle vehicle = Vehicle.builder()
-                .plate(request.plate())
-                .name(request.name())
-                .type(request.type())
+                .plate(dto.getPlate())
+                .name(dto.getName())
+                .type(dto.getType())
                 .build();
         return VehicleResponseFull.from(vehicleRepository.save(vehicle));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<VehicleResponseFull> findAll(Pageable pageable) {
+        Page<Vehicle> vehicles = vehicleRepository.findAll(pageable);
+
+        return new PageImpl<>(vehicles.getContent().stream()
+                .map(VehicleResponseFull::from)
+                .toList(), vehicles.getPageable(), vehicles.getTotalElements());
     }
 
     @Transactional(readOnly = true)

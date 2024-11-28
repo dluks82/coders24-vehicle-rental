@@ -4,8 +4,9 @@ import dev.dluks.rental.model.vehicle.Vehicle;
 import dev.dluks.rental.model.vehicle.VehicleStatus;
 import dev.dluks.rental.model.vehicle.VehicleType;
 import dev.dluks.rental.repository.VehicleRepository;
-import dev.dluks.rental.service.dto.CreateVehicleRequest;
-import dev.dluks.rental.service.dto.VehicleResponseFull;
+import dev.dluks.rental.service.vehicle.CreateVehicleRequest;
+import dev.dluks.rental.service.vehicle.VehicleResponseFull;
+import dev.dluks.rental.service.vehicle.VehicleService;
 import dev.dluks.rental.support.BaseUnitTest;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +48,11 @@ class VehicleServiceTest extends BaseUnitTest {
 
     @BeforeEach
     void setUp() {
-        createCar = new CreateVehicleRequest("ABC1234", "Honda Civic", VehicleType.CAR);
+        createCar = CreateVehicleRequest.builder()
+                .plate("ABC1234")
+                .name("Honda Civic")
+                .type(VehicleType.CAR)
+                .build();
 
         car = new Vehicle("ABC1234", "Honda Civic", VehicleType.CAR);
         car.setStatus(VehicleStatus.AVAILABLE);

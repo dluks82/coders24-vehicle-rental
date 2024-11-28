@@ -1,9 +1,14 @@
 package dev.dluks.rental.controller;
 
-import dev.dluks.rental.service.VehicleService;
-import dev.dluks.rental.service.dto.CreateVehicleRequest;
-import dev.dluks.rental.service.dto.VehicleResponseFull;
+import dev.dluks.rental.service.vehicle.VehicleService;
+import dev.dluks.rental.service.vehicle.CreateVehicleRequest;
+import dev.dluks.rental.service.vehicle.VehicleResponseFull;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -31,6 +36,20 @@ public class VehicleController {
                 .buildAndExpand(vehicle.getId())
                 .toUri();
         return ResponseEntity.created(uri).body(vehicle);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<VehicleResponseFull>> findAll(
+            @RequestParam(required = false, defaultValue = "name") String sort,
+            @PageableDefault(
+                    size = 10,
+                    direction = Sort.Direction.ASC)
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(vehicleService.findAll(
+                PageRequest.of(pageable.getPageNumber(),
+                        pageable.getPageSize(), Sort.by(sort))
+        ));
     }
 
     @GetMapping("/{id}")
