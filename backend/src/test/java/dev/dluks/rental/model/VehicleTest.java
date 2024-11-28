@@ -84,7 +84,7 @@ class VehicleTest extends BaseUnitTest {
                             () -> new Vehicle("ABCD123", "Invalid", VehicleType.CAR)),
                     () -> assertThrows(IllegalArgumentException.class,
                             () -> new Vehicle("ABC12345", "Invalid", VehicleType.CAR)),
-                    () -> assertThrows(NullPointerException.class,
+                    () -> assertThrows(IllegalArgumentException.class,
                             () -> new Vehicle(null, "Invalid", VehicleType.CAR))
             );
         }

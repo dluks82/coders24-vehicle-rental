@@ -1,4 +1,4 @@
-package dev.dluks.rental.service.dto;
+package dev.dluks.rental.service.vehicle;
 
 import dev.dluks.rental.model.vehicle.Vehicle;
 import dev.dluks.rental.model.vehicle.VehicleStatus;
