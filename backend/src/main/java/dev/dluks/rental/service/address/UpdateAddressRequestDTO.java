@@ -2,11 +2,13 @@ package dev.dluks.rental.service.address;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
 @ToString
+@Builder
 public class UpdateAddressRequestDTO {
 
     @Size(max = 200, message = "Street cannot exceed 200 characters.")
