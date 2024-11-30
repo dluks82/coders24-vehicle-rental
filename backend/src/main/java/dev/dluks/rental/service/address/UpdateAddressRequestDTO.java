@@ -29,4 +29,7 @@ public class UpdateAddressRequestDTO {
     @Pattern(regexp = "^[A-Z]{2}$", message = "State must be a valid two-letter abbreviation.")
     private String state;
 
+    @Pattern(regexp = "^\\d{5}-\\d{3}$", message = "Zip code must be in the format XXXXX-XXX.")
+    private String zipCode;
+
 }

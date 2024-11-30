@@ -53,6 +53,7 @@ public class AddressService {
         updateField(address::setNeighborhood, updateAddressRequestDTO.getNeighborhood());
         updateField(address::setCity, updateAddressRequestDTO.getCity());
         updateField(address::setState, updateAddressRequestDTO.getState());
+        updateField(address::setZipCode, updateAddressRequestDTO.getZipCode());
 
         addressRepository.save(address);
 
