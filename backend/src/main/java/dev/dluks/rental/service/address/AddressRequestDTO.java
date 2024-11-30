@@ -3,9 +3,11 @@ package dev.dluks.rental.service.address;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class AddressRequestDTO {
 
     @NotBlank(message = "Street is mandatory.")

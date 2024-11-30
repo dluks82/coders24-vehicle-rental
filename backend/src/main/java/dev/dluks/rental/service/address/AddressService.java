@@ -1,14 +1,11 @@
 package dev.dluks.rental.service.address;
 
-import dev.dluks.rental.exception.AddressAlreadyExistsException;
 import dev.dluks.rental.exception.AddressNotFoundException;
 import dev.dluks.rental.model.address.Address;
 import dev.dluks.rental.repository.AddressRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -18,22 +15,12 @@ public class AddressService {
 
     private final AddressRepository addressRepository;
 
-    public List<Address> getAllAddress() {
-        return addressRepository.findAll();
-    }
-
     public Address getAddressById(UUID id) {
         return addressRepository.findById(id)
             .orElseThrow(() -> new AddressNotFoundException(id.toString() + " not found."));
     }
 
     public Address saveAddress(AddressRequestDTO addressRequestDTO) {
-        Optional<Address> addressExisting = addressRepository.findAddressByZipCode(addressRequestDTO.getZipCode());
-
-        if (addressExisting.isPresent()) {
-            throw new AddressAlreadyExistsException("Address " + addressRequestDTO.getZipCode() + " already exists.");
-        }
-
         Address address = Address.builder()
                 .street(addressRequestDTO.getStreet())
                 .number(addressRequestDTO.getNumber())
@@ -43,7 +30,6 @@ public class AddressService {
                 .state(addressRequestDTO.getState())
                 .zipCode(addressRequestDTO.getZipCode())
                 .build();
-
         return addressRepository.save(address);
     }
 
@@ -67,6 +53,7 @@ public class AddressService {
         updateField(address::setNeighborhood, updateAddressRequestDTO.getNeighborhood());
         updateField(address::setCity, updateAddressRequestDTO.getCity());
         updateField(address::setState, updateAddressRequestDTO.getState());
+        updateField(address::setZipCode, updateAddressRequestDTO.getZipCode());
 
         addressRepository.save(address);
 

@@ -2,11 +2,13 @@ package dev.dluks.rental.service.address;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
 @ToString
+@Builder
 public class UpdateAddressRequestDTO {
 
     @Size(max = 200, message = "Street cannot exceed 200 characters.")
@@ -26,5 +28,8 @@ public class UpdateAddressRequestDTO {
 
     @Pattern(regexp = "^[A-Z]{2}$", message = "State must be a valid two-letter abbreviation.")
     private String state;
+
+    @Pattern(regexp = "^\\d{5}-\\d{3}$", message = "Zip code must be in the format XXXXX-XXX.")
+    private String zipCode;
 
 }
