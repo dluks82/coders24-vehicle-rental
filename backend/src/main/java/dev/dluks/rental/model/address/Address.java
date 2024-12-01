@@ -10,6 +10,7 @@ import lombok.*;
 @Table(name="addresses")
 @Getter
 @Builder
+@NoArgsConstructor
 public class Address extends BaseEntity {
 
     @Column(name = "street", nullable = false, length = 200)
@@ -96,10 +97,6 @@ public class Address extends BaseEntity {
         this.city = validateFieldOrThrow(city);
         this.state = validateFieldOrThrow(state);
         this.zipCode = validateFieldOrThrow(zipCode);
-    }
-
-    protected Address() {
-        validateAddressOrThrow(this);
     }
 
 }

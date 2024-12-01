@@ -45,12 +45,6 @@ class AddressTest extends BaseUnitTest {
         }
 
         @Test
-        @DisplayName("Must validate if it allows creating class with null data with Constructor")
-        void mustValidateIfItAllowsCreatingClassWithNullDataWithConstructor() {
-            assertThrows(IllegalArgumentException.class, Address::new);
-        }
-
-        @Test
         @DisplayName("Should create Address with valid data")
         void shouldCreateAddressWithValidData() {
             assertAll(
