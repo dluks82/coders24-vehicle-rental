@@ -1,5 +1,7 @@
 package dev.dluks.rental.service.agency;
 
+import dev.dluks.rental.service.address.UpdateAddressRequestDTO;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,5 +18,8 @@ public class UpdateAgencyRequest {
 
     @Email(message = "Invalid email")
     private String email;
+
+    @Valid
+    private UpdateAddressRequestDTO updateAddress;
 
 }

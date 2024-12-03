@@ -1,8 +1,12 @@
 package dev.dluks.rental.service.agency;
 
 import dev.dluks.rental.exception.AgencyNotFoundException;
+import dev.dluks.rental.model.address.Address;
 import dev.dluks.rental.model.agency.Agency;
+import dev.dluks.rental.repository.AddressRepository;
 import dev.dluks.rental.repository.AgencyRepository;
+import dev.dluks.rental.service.address.AddressRequestDTO;
+import dev.dluks.rental.service.address.AddressService;
 import dev.dluks.rental.support.BaseUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +37,9 @@ class AgencyServiceTest extends BaseUnitTest {
     @Mock
     private AgencyRepository agencyRepository;
 
+    @Mock
+    private AddressService addressService;
+
     @InjectMocks
     private AgencyService agencyService;
 
@@ -40,14 +47,38 @@ class AgencyServiceTest extends BaseUnitTest {
 
     private Agency agency;
 
+    private AddressRequestDTO addressRequestDTO;
+    private Address address;
+
     @BeforeEach
     void setUp() {
+
+        addressRequestDTO = AddressRequestDTO.builder()
+                .street("Pine Street")
+                .number("11")
+                .complement("Penthouse")
+                .neighborhood("Old Town")
+                .city("Chicago")
+                .state("IL")
+                .zipCode("60614-111")
+                .build();
+
+        address = Address.builder()
+                .street(addressRequestDTO.getStreet())
+                .number(addressRequestDTO.getNumber())
+                .complement(addressRequestDTO.getComplement())
+                .neighborhood(addressRequestDTO.getNeighborhood())
+                .city(addressRequestDTO.getCity())
+                .state(addressRequestDTO.getState())
+                .zipCode(addressRequestDTO.getZipCode())
+                .build();
 
         createAgencyRequest = CreateAgencyRequest.builder()
                 .name("Agency Name")
                 .document("12345678000195")
                 .phone("1234567890")
                 .email("agency@email.com")
+                .addressRequestDTO(addressRequestDTO)
                 .build();
 
         agency = Agency.builder()
@@ -55,6 +86,7 @@ class AgencyServiceTest extends BaseUnitTest {
                 .document(createAgencyRequest.getDocument())
                 .phone(createAgencyRequest.getPhone())
                 .email(createAgencyRequest.getEmail())
+                .address(address)
                 .build();
     }
 
@@ -66,8 +98,8 @@ class AgencyServiceTest extends BaseUnitTest {
         @DisplayName("should create agency with valid data")
         void shouldCreateAgencyWithValidData() {
             // given
-            given(agencyRepository.save(
-                    any(Agency.class))).willReturn(agency);
+            given(addressService.saveAddress(any())).willReturn(address);
+            given(agencyRepository.save(any(Agency.class))).willReturn(agency);
 
             // when
             Agency createdAgency = agencyService.create(createAgencyRequest);
@@ -222,6 +254,7 @@ class AgencyServiceTest extends BaseUnitTest {
                     .document("12345678000195")
                     .phone("Old Phone")
                     .email("old@example.com")
+                    .address(address)
                     .build();
 
             UpdateAgencyRequest updateRequest = UpdateAgencyRequest.builder()

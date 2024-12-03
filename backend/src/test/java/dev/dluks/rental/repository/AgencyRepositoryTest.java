@@ -1,5 +1,6 @@
 package dev.dluks.rental.repository;
 
+import dev.dluks.rental.model.address.Address;
 import dev.dluks.rental.model.agency.Agency;
 import dev.dluks.rental.support.BaseRepositoryTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,9 @@ class AgencyRepositoryTest  extends BaseRepositoryTest {
     AgencyRepository agencyRepository;
 
     @Autowired
+    AddressRepository addressRepository;
+
+    @Autowired
     private TestEntityManager entityManager;
 
     private final String name = "Agency Name";
@@ -27,15 +31,29 @@ class AgencyRepositoryTest  extends BaseRepositoryTest {
     private final String phone = "1234567890";
     private final String email = "agency@email.com";
 
-    Agency agency;
+    private Address address;
+    private Agency agency;
 
     @BeforeEach
     void setUp() {
+        address = Address.builder()
+                .street("Pine Street")
+                .number("11")
+                .complement("Penthouse")
+                .neighborhood("Old Town")
+                .city("Chicago")
+                .state("IL")
+                .zipCode("60614-111")
+                .build();
+
+        Address savedAddress =  addressRepository.save(address);
+
         agency = Agency.builder()
                 .name(name)
                 .document(document)
                 .phone(phone)
                 .email(email)
+                .address(savedAddress)
                 .build();
     }
 
