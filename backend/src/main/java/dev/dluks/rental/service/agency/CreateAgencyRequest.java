@@ -1,5 +1,7 @@
 package dev.dluks.rental.service.agency;
 
+import dev.dluks.rental.service.address.AddressRequestDTO;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,5 +26,9 @@ public class CreateAgencyRequest {
     @NotNull(message = "Email is required")
     @Email(message = "Invalid email")
     private String email;
+
+    @NotNull(message = "Address request is required")
+    @Valid
+    private AddressRequestDTO addressRequestDTO;
 
 }

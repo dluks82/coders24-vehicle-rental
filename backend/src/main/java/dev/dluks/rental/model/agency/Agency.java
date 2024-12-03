@@ -1,13 +1,11 @@
 package dev.dluks.rental.model.agency;
 
+import dev.dluks.rental.model.address.Address;
 import dev.dluks.rental.model.base.BaseEntity;
 import dev.dluks.rental.model.customer.CustomerType;
 import dev.dluks.rental.model.validator.document.DocumentValidatorStrategy;
 import dev.dluks.rental.model.validator.factory.DocumentValidatorFactory;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 
@@ -39,13 +37,16 @@ public class Agency extends BaseEntity {
     @Transient
     private DocumentValidatorStrategy validator;
 
-//    private Address address;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id", nullable = false)
+    private Address address;
 
     @Builder
-    public Agency(String name, String document, String phone, String email) {
+    public Agency(String name, String document, String phone, String email, Address address) {
         setName(name);
         setPhone(phone);
         setEmail(email);
+        setAddress(address);
 
         this.validator = initializeValidator();
         setDocument(document);
@@ -77,6 +78,13 @@ public class Agency extends BaseEntity {
             throw new IllegalArgumentException("Invalid email format");
         }
         this.email = email;
+    }
+
+    public void setAddress(Address address) {
+        if (address == null) {
+            throw new IllegalArgumentException("Address is required");
+        }
+        this.address = address;
     }
 
     public void setDocument(String document) {

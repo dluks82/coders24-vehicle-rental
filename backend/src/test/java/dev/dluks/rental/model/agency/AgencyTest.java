@@ -1,5 +1,6 @@
 package dev.dluks.rental.model.agency;
 
+import dev.dluks.rental.model.address.Address;
 import dev.dluks.rental.support.BaseUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,21 +13,34 @@ import static org.junit.jupiter.api.Assertions.*;
 class AgencyTest extends BaseUnitTest {
 
     private Agency agency;
+    private Address address;
 
-    private String name = "Agency Name";
-    private String document = "12345678000195";
-    private String phone = "1234567890";
-    private String email = "agency@email.com";
+    private final String name = "Agency Name";
+    private final String document = "12345678000195";
+    private final String phone = "1234567890";
+    private final String email = "agency@email.com";
 
     @BeforeEach
     void setUp() {
+
+        address = Address.builder()
+                .street("Pine Street")
+                .number("11")
+                .complement("Penthouse")
+                .neighborhood("Old Town")
+                .city("Chicago")
+                .state("IL")
+                .zipCode("60614-111")
+                .build();
 
         agency = Agency.builder()
                 .name(name)
                 .document(document)
                 .phone(phone)
                 .email(email)
+                .address(address)
                 .build();
+
     }
 
     @Nested
@@ -59,10 +73,12 @@ class AgencyTest extends BaseUnitTest {
                             name,
                             invalidDocument,
                             phone,
-                            email
+                            email,
+                            address
                     )
             );
         }
+
     }
 
     @Nested

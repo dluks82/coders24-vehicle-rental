@@ -6,10 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.UUID;
+
 @Getter
 @ToString
 @Builder
 public class UpdateAddressRequestDTO {
+
+    private UUID id;
 
     @Size(max = 200, message = "Street cannot exceed 200 characters.")
     private String street;
