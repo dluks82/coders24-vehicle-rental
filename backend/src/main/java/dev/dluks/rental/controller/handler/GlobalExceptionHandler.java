@@ -1,6 +1,8 @@
 package dev.dluks.rental.controller.handler;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import dev.dluks.rental.exception.CustomerAlreadyRegisteredException;
+import dev.dluks.rental.exception.CustomerNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +69,27 @@ public class GlobalExceptionHandler {
                 new StandardError(HttpStatus.INTERNAL_SERVER_ERROR.value(),
                         LocalDateTime.now(),
                         "An unexpected error occurred"));
+    }
+
+
+    @ExceptionHandler(CustomerAlreadyRegisteredException.class)
+    public ResponseEntity<StandardError> customerAlreadyRegistered(RuntimeException ex) {
+        log.error("Business error: ", ex);
+        return ResponseEntity.badRequest().body(
+                new StandardError(
+                        HttpStatus.BAD_REQUEST.value(),
+                        LocalDateTime.now(),
+                        ex.getMessage()));
+    }
+
+    @ExceptionHandler(CustomerNotFoundException.class)
+    public ResponseEntity<StandardError> customerNotFound(RuntimeException ex) {
+        log.error("Business error: ", ex);
+        return ResponseEntity.badRequest().body(
+                new StandardError(
+                        HttpStatus.NOT_FOUND.value(),
+                        LocalDateTime.now(),
+                        ex.getMessage()));
     }
 
     @Getter
