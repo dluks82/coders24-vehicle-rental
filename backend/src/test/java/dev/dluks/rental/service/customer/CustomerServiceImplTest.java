@@ -66,6 +66,30 @@ class CustomerServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("Deve Criar um cliente Corporativo com sucesso")
+    void createCorporateCustomerSucess() {
+
+        //given
+        given(repository.save(any(Customer.class))).willReturn(customerCorporate);
+        when(repository.findByDocument(customerCorporate.getDocument())).thenReturn(null);
+
+        //when
+        var createdCustomer = service.createCustomer(customerCorporate);
+
+        //then
+        assertNotNull(createdCustomer);
+        assertNotNull(createdCustomer.getId());
+        assertEquals(Customer.class, createdCustomer.getClass());
+        assertEquals("19132741000154", createdCustomer.getDocument());
+        assertEquals(CustomerType.CORPORATE, createdCustomer.getType());
+        assertEquals("John Corporate", createdCustomer.getName());
+        assertEquals("12345678901", createdCustomer.getPhone());
+        assertEquals("j@j.com", createdCustomer.getEmail());
+        assertEquals(address, createdCustomer.getAddress());
+
+
+    }
 
 
     @Test
