@@ -1,19 +1,72 @@
 package dev.dluks.rental.service.customer;
 
+import dev.dluks.rental.model.address.Address;
+import dev.dluks.rental.model.customer.Customer;
+import dev.dluks.rental.model.customer.CustomerType;
+import dev.dluks.rental.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
+
 
 class CustomerServiceImplTest {
 
+    @InjectMocks
+    private CustomerServiceImpl service;
+
+    @Mock
+    private CustomerRepository repository;
+
+    private Customer customerIndividual;
+    private Customer customerCorporate;
+    private Address address;
+
+
+
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
+        startCustomer();
     }
 
     @Test
-    void createCustomer() {
+    @DisplayName("Deve Criar um cliente individual com sucesso")
+    void createIndividualCustomerSucess() {
+
+        //given
+        given(repository.save(any(Customer.class))).willReturn(customerIndividual);
+        when(repository.findByDocument(customerIndividual.getDocument())).thenReturn(null);
+
+        //when
+        var createdCustomer = service.createCustomer(customerIndividual);
+
+        //then
+        assertNotNull(createdCustomer);
+        assertNotNull(createdCustomer.getId());
+        assertEquals(Customer.class, createdCustomer.getClass());
+        assertEquals("00146729013", createdCustomer.getDocument());
+        assertEquals(CustomerType.INDIVIDUAL, createdCustomer.getType());
+        assertEquals("John Individual", createdCustomer.getName());
+        assertEquals("12345678901", createdCustomer.getPhone());
+        assertEquals("j@j.com", createdCustomer.getEmail());
+        assertEquals(address, createdCustomer.getAddress());
+
+
     }
+
+
 
     @Test
     void updateCustomer() {
@@ -33,5 +86,11 @@ class CustomerServiceImplTest {
 
     @Test
     void findCustomerByName() {
+    }
+
+    private void startCustomer() {
+         address = new Address("street", "number", "complement", "neighborhood", "city", "state", "zipCode");
+         customerIndividual = new Customer("John Individual", "00146729013", CustomerType.INDIVIDUAL, "12345678901", "j@j.com", address);
+         customerCorporate = new Customer("John Corporate", "19132741000154", CustomerType.CORPORATE, "12345678901", "j@j.com", address);
     }
 }
