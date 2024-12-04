@@ -3,10 +3,8 @@ package dev.dluks.rental.service.agency;
 import dev.dluks.rental.exception.AgencyNotFoundException;
 import dev.dluks.rental.model.address.Address;
 import dev.dluks.rental.model.agency.Agency;
-import dev.dluks.rental.repository.AddressRepository;
 import dev.dluks.rental.repository.AgencyRepository;
 import dev.dluks.rental.service.address.AddressRequestDTO;
-import dev.dluks.rental.service.address.AddressService;
 import dev.dluks.rental.support.BaseUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,9 +34,6 @@ class AgencyServiceTest extends BaseUnitTest {
 
     @Mock
     private AgencyRepository agencyRepository;
-
-    @Mock
-    private AddressService addressService;
 
     @InjectMocks
     private AgencyService agencyService;
@@ -98,7 +93,6 @@ class AgencyServiceTest extends BaseUnitTest {
         @DisplayName("should create agency with valid data")
         void shouldCreateAgencyWithValidData() {
             // given
-            given(addressService.saveAddress(any())).willReturn(address);
             given(agencyRepository.save(any(Agency.class))).willReturn(agency);
 
             // when

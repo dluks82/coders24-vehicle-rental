@@ -15,13 +15,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Agency Repository Tests")
-class AgencyRepositoryTest  extends BaseRepositoryTest {
+class AgencyRepositoryTest extends BaseRepositoryTest{
 
     @Autowired
     AgencyRepository agencyRepository;
-
-    @Autowired
-    AddressRepository addressRepository;
 
     @Autowired
     private TestEntityManager entityManager;
@@ -46,14 +43,12 @@ class AgencyRepositoryTest  extends BaseRepositoryTest {
                 .zipCode("60614-111")
                 .build();
 
-        Address savedAddress =  addressRepository.save(address);
-
         agency = Agency.builder()
                 .name(name)
                 .document(document)
                 .phone(phone)
                 .email(email)
-                .address(savedAddress)
+                .address(address)
                 .build();
     }
 

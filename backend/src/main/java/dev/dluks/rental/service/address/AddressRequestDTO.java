@@ -1,5 +1,6 @@
 package dev.dluks.rental.service.address;
 
+import dev.dluks.rental.model.address.Address;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -36,5 +37,17 @@ public class AddressRequestDTO {
     @NotBlank(message = "Zip code is mandatory.")
     @Pattern(regexp = "^\\d{5}-\\d{3}$", message = "Zip code must be in the format XXXXX-XXX.")
     private String zipCode;
+
+    public static Address toEntity(AddressRequestDTO addressRequestDTO) {
+        return Address.builder()
+                .street(addressRequestDTO.getStreet())
+                .number(addressRequestDTO.getNumber())
+                .complement(addressRequestDTO.getComplement())
+                .neighborhood(addressRequestDTO.getNeighborhood())
+                .city(addressRequestDTO.getCity())
+                .state(addressRequestDTO.getState())
+                .zipCode(addressRequestDTO.getZipCode())
+                .build();
+    }
 
 }
