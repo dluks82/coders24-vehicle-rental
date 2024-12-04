@@ -1,9 +1,11 @@
 package dev.dluks.rental.service.customer;
 
+import dev.dluks.rental.model.address.Address;
 import dev.dluks.rental.model.customer.Customer;
 import dev.dluks.rental.model.customer.CustomerType;
 import dev.dluks.rental.model.validator.document.SanitizeDocument;
 import dev.dluks.rental.repository.CustomerRepository;
+import jakarta.persistence.Embedded;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,9 @@ import java.util.UUID;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository repository;
+
+    @Embedded
+    private Address address;
 
     @Autowired
     public CustomerServiceImpl(CustomerRepository repository) {
