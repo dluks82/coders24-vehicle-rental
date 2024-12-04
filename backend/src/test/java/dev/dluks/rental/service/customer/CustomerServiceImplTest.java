@@ -1,11 +1,13 @@
 package dev.dluks.rental.service.customer;
 
+import dev.dluks.rental.exception.CustomerAlreadyRegisteredException;
 import dev.dluks.rental.model.address.Address;
 import dev.dluks.rental.model.customer.Customer;
 import dev.dluks.rental.model.customer.CustomerType;
 import dev.dluks.rental.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
@@ -41,9 +44,14 @@ class CustomerServiceImplTest {
         startCustomer();
     }
 
-    @Test
-    @DisplayName("Deve Criar um cliente individual com sucesso")
-    void createIndividualCustomerSucess() {
+    @Nested
+    @DisplayName("Creation")
+    class Creation {
+
+
+        @Test
+        @DisplayName("Deve Criar um cliente individual com sucesso")
+        void createIndividualCustomerSucess() {
 
         //given
         given(repository.save(any(Customer.class))).willReturn(customerIndividual);
@@ -62,13 +70,11 @@ class CustomerServiceImplTest {
         assertEquals("12345678901", createdCustomer.getPhone());
         assertEquals("j@j.com", createdCustomer.getEmail());
         assertEquals(address, createdCustomer.getAddress());
+        }
 
-
-    }
-
-    @Test
-    @DisplayName("Deve Criar um cliente Corporativo com sucesso")
-    void createCorporateCustomerSucess() {
+        @Test
+         @DisplayName("Deve Criar um cliente Corporativo com sucesso")
+        void createCorporateCustomerSucess() {
 
         //given
         given(repository.save(any(Customer.class))).willReturn(customerCorporate);
@@ -87,11 +93,38 @@ class CustomerServiceImplTest {
         assertEquals("12345678901", createdCustomer.getPhone());
         assertEquals("j@j.com", createdCustomer.getEmail());
         assertEquals(address, createdCustomer.getAddress());
+         }
+
+         @Test
+        @DisplayName("Deve lançar exceçãpo ao tentar cadastrar CPF já cadastrado")
+        void createIndividualCustomerAlreadyRegistered() {
+           when (repository.findByDocument(anyString())).thenThrow(new CustomerAlreadyRegisteredException("CPF ja cadastrado"));
+
+            try{
+                repository.findByDocument("00146729013");
+            }catch (Exception e){
+                assertEquals(CustomerAlreadyRegisteredException.class, e.getClass());
+                assertEquals("CPF ja cadastrado", e.getMessage());
+            }
+
+        }
+
 
 
     }
 
 
+
+    @Nested
+    @DisplayName("Update")
+    class Update {
+        @Test
+        @DisplayName("Deve atualizar um cliente existente com sucesso")
+        void updateCustomerSucess() {
+        }
+
+
+    }
     @Test
     void updateCustomer() {
     }
