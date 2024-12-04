@@ -4,7 +4,7 @@ import dev.dluks.rental.exception.AgencyNotFoundException;
 import dev.dluks.rental.model.address.Address;
 import dev.dluks.rental.model.agency.Agency;
 import dev.dluks.rental.repository.AgencyRepository;
-import dev.dluks.rental.service.address.AddressService;
+import dev.dluks.rental.service.address.AddressRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,6 @@ import java.util.function.Consumer;
 public class AgencyService {
 
     private final AgencyRepository agencyRepository;
-    private final AddressService addressService;
 
     public Agency getAgencyById(UUID id) {
         return agencyRepository.findById(id)
@@ -24,7 +23,7 @@ public class AgencyService {
     }
 
     public Agency create(CreateAgencyRequest dto) {
-        Address address = addressService.saveAddress(dto.getAddressRequestDTO());
+        Address address = AddressRequestDTO.toEntity(dto.getAddressRequestDTO());
 
         Agency agency = Agency.builder()
                 .name(dto.getName())
@@ -53,24 +52,24 @@ public class AgencyService {
     }
 
     public Agency updateAgency(UUID id, UpdateAgencyRequest updateAgencyRequest) {
-       Agency agency = getAgencyById(id);
+        Agency agency = getAgencyById(id);
 
-       updateField(agency::setName, updateAgencyRequest.getName());
-       updateField(agency::setDocument, updateAgencyRequest.getDocument());
-       updateField(agency::setPhone, updateAgencyRequest.getPhone());
-       updateField(agency::setEmail, updateAgencyRequest.getEmail());
+        updateField(agency::setName, updateAgencyRequest.getName());
+        updateField(agency::setDocument, updateAgencyRequest.getDocument());
+        updateField(agency::setPhone, updateAgencyRequest.getPhone());
+        updateField(agency::setEmail, updateAgencyRequest.getEmail());
 
-       if (updateAgencyRequest.getUpdateAddress() != null) {
-           agency.setAddress(
-               addressService.updateAddress(
-                   updateAgencyRequest.getUpdateAddress().getId(),
-                   updateAgencyRequest.getUpdateAddress()
-               )
-           );
-       }
+//        if (updateAgencyRequest.getUpdateAddress() != null) {
+//            agency.setAddress(
+//                    addressService.updateAddress(
+//                            updateAgencyRequest.getUpdateAddress().getId(),
+//                            updateAgencyRequest.getUpdateAddress()
+//                    )
+//            );
+//        }
 
-       agencyRepository.save(agency);
-       return agency;
+        agencyRepository.save(agency);
+        return agency;
     }
 
 }

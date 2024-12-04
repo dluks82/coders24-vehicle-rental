@@ -37,8 +37,7 @@ public class Agency extends BaseEntity {
     @Transient
     private DocumentValidatorStrategy validator;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id", nullable = false)
+    @Embedded
     private Address address;
 
     @Builder

@@ -1,17 +1,14 @@
 package dev.dluks.rental.model.address;
 
-import dev.dluks.rental.model.base.BaseEntity;
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.Embeddable;
 import lombok.*;
 
-@Entity
-@Table(name="addresses")
+@Embeddable
 @Getter
 @Builder
-@NoArgsConstructor
-public class Address extends BaseEntity {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Address {
 
     @Column(name = "street", nullable = false, length = 200)
     private String street;
