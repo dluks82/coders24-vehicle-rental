@@ -43,14 +43,16 @@ public class Customer extends BaseEntity {
             @NonNull String document,
             @NonNull CustomerType type,
             @NonNull String phone,
-            @NonNull String email) {
+            @NonNull String email,
+            Address address) {
         this.name = name;
         this.type = type;
         this.phone = phone;
         this.email = email;
         this.validator = initializeValidator();
         setDocument(document);
-    }
+        this.address = address;
+         }
 
     private DocumentValidatorStrategy initializeValidator() {
         return DocumentValidatorFactory.getValidator(type);
