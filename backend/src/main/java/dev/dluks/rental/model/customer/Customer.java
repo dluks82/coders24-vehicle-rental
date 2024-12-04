@@ -1,5 +1,6 @@
 package dev.dluks.rental.model.customer;
 
+import dev.dluks.rental.model.address.Address;
 import dev.dluks.rental.model.base.BaseEntity;
 import dev.dluks.rental.model.validator.document.DocumentValidatorStrategy;
 import dev.dluks.rental.model.validator.factory.DocumentValidatorFactory;
@@ -33,7 +34,8 @@ public class Customer extends BaseEntity {
     @Transient
     private DocumentValidatorStrategy validator;
 
-//    private Address address;
+    @Embedded
+    private Address address;
 
     @Builder
     public Customer(

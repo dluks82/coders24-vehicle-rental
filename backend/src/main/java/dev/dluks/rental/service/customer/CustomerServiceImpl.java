@@ -1,19 +1,27 @@
 package dev.dluks.rental.service.customer;
 
+import dev.dluks.rental.exception.CustomerAlreadyRegisteredException;
+import dev.dluks.rental.exception.CustomerNotFoundException;
+import dev.dluks.rental.model.address.Address;
 import dev.dluks.rental.model.customer.Customer;
 import dev.dluks.rental.model.customer.CustomerType;
-import dev.dluks.rental.model.validator.document.SanitizeDocument;
 import dev.dluks.rental.repository.CustomerRepository;
+import jakarta.persistence.Embedded;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+import static dev.dluks.rental.model.validator.document.SanitizeDocument.sanitizeDocument;
+
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository repository;
+
+    @Embedded
+    private Address address;
 
     @Autowired
     public CustomerServiceImpl(CustomerRepository repository) {
@@ -23,15 +31,17 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer createCustomer(Customer customer) {
-        Customer existCustomer = repository.findByDocument(customer.getDocument());
+       customer.setDocument(sanitizeDocument(customer.getDocument()));
+       Customer existCustomer = repository.findByDocument(customer.getDocument());
 
         if(existCustomer != null && existCustomer.getType() == CustomerType.INDIVIDUAL){
-            throw new RuntimeException("CPF já Cadastrado");
+            throw new CustomerAlreadyRegisteredException("CPF já Cadastrado");
         }
 
         if(existCustomer != null && existCustomer.getType() == CustomerType.CORPORATE){
-            throw new RuntimeException("CNPJ já Cadastrado");
+            throw new CustomerAlreadyRegisteredException("CNPJ já Cadastrado");
         }
+
 
         return repository.save(customer);
     }
@@ -56,7 +66,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer findCustomerByDocument(String document) {
-        document = SanitizeDocument.sanitizeDocument(document);
+        document = sanitizeDocument(document);
         return repository.findByDocument(document);
     }
 
@@ -70,7 +80,7 @@ public class CustomerServiceImpl implements CustomerService {
         List<Customer> list = repository.findByNameContainingIgnoreCase(name);
 
         if(list.isEmpty()){
-            throw new RuntimeException("Nenhum Cliente Encontrado");
+            throw new CustomerNotFoundException("Nenhum Cliente Encontrado");
         }
 
         return list;
