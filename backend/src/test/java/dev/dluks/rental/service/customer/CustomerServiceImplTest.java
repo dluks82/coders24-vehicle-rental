@@ -109,6 +109,20 @@ class CustomerServiceImplTest {
 
         }
 
+        @Test
+        @DisplayName("Deve lançar exceçãpo ao tentar cadastrar CNPJ já cadastrado")
+        void createCorporateCustomerAlreadyRegistered() {
+            when (repository.findByDocument(anyString())).thenThrow(new CustomerAlreadyRegisteredException("CNPJ ja cadastrado"));
+
+            try{
+                repository.findByDocument("19132741000154");
+            }catch (Exception e){
+                assertEquals(CustomerAlreadyRegisteredException.class, e.getClass());
+                assertEquals("CNPJ ja cadastrado", e.getMessage());
+            }
+
+        }
+
 
 
     }
