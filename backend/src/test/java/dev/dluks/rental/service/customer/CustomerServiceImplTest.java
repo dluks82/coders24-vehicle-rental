@@ -40,7 +40,6 @@ class CustomerServiceImplTest {
     private Address address;
 
 
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -56,80 +55,73 @@ class CustomerServiceImplTest {
         @DisplayName("Deve Criar um cliente individual com sucesso")
         void createIndividualCustomerSucess() {
 
-        //given
-        given(repository.save(any(Customer.class))).willReturn(customerIndividual);
-        when(repository.findByDocument(customerIndividual.getDocument())).thenReturn(null);
+            //given
+            given(repository.save(any(Customer.class))).willReturn(customerIndividual);
+            when(repository.findByDocument(customerIndividual.getDocument())).thenReturn(null);
 
-        //when
-        var createdCustomer = service.createCustomer(customerIndividual);
+            //when
+            var createdCustomer = service.createCustomer(customerIndividual);
 
-        //then
-        assertNotNull(createdCustomer);
-        assertNotNull(createdCustomer.getId());
-        assertEquals(Customer.class, createdCustomer.getClass());
-        assertEquals("00146729013", createdCustomer.getDocument());
-        assertEquals(CustomerType.INDIVIDUAL, createdCustomer.getType());
-        assertEquals("John Individual", createdCustomer.getName());
-        assertEquals("12345678901", createdCustomer.getPhone());
-        assertEquals("j@j.com", createdCustomer.getEmail());
-        assertEquals(address, createdCustomer.getAddress());
+            //then
+            assertNotNull(createdCustomer);
+            assertNotNull(createdCustomer.getId());
+            assertEquals(Customer.class, createdCustomer.getClass());
+            assertEquals("00146729013", createdCustomer.getDocument());
+            assertEquals(CustomerType.INDIVIDUAL, createdCustomer.getType());
+            assertEquals("John Individual", createdCustomer.getName());
+            assertEquals("12345678901", createdCustomer.getPhone());
+            assertEquals("j@j.com", createdCustomer.getEmail());
+            assertEquals(address, createdCustomer.getAddress());
         }
 
         @Test
-         @DisplayName("Deve Criar um cliente Corporativo com sucesso")
+        @DisplayName("Deve Criar um cliente Corporativo com sucesso")
         void createCorporateCustomerSucess() {
 
-        //given
-        given(repository.save(any(Customer.class))).willReturn(customerCorporate);
-        when(repository.findByDocument(customerCorporate.getDocument())).thenReturn(null);
+            //given
+            given(repository.save(any(Customer.class))).willReturn(customerCorporate);
+            when(repository.findByDocument(customerCorporate.getDocument())).thenReturn(null);
 
-        //when
-        var createdCustomer = service.createCustomer(customerCorporate);
+            //when
+            var createdCustomer = service.createCustomer(customerCorporate);
 
-        //then
-        assertNotNull(createdCustomer);
-        assertNotNull(createdCustomer.getId());
-        assertEquals(Customer.class, createdCustomer.getClass());
-        assertEquals("19132741000154", createdCustomer.getDocument());
-        assertEquals(CustomerType.CORPORATE, createdCustomer.getType());
-        assertEquals("John Corporate", createdCustomer.getName());
-        assertEquals("12345678901", createdCustomer.getPhone());
-        assertEquals("j@j.com", createdCustomer.getEmail());
-        assertEquals(address, createdCustomer.getAddress());
-         }
+            //then
+            assertNotNull(createdCustomer);
+            assertNotNull(createdCustomer.getId());
+            assertEquals(Customer.class, createdCustomer.getClass());
+            assertEquals("19132741000154", createdCustomer.getDocument());
+            assertEquals(CustomerType.CORPORATE, createdCustomer.getType());
+            assertEquals("John Corporate", createdCustomer.getName());
+            assertEquals("12345678901", createdCustomer.getPhone());
+            assertEquals("j@j.com", createdCustomer.getEmail());
+            assertEquals(address, createdCustomer.getAddress());
+        }
 
-         @Test
+        @Test
         @DisplayName("Deve lançar exceçãpo ao tentar cadastrar CPF já cadastrado")
         void createIndividualCustomerAlreadyRegistered() {
-           when (repository.findByDocument(anyString())).thenThrow(new CustomerAlreadyRegisteredException("CPF ja cadastrado"));
+            when(repository.findByDocument("00146729013"))
+                    .thenReturn(customerIndividual);
 
-            try{
-                repository.findByDocument("00146729013");
-            }catch (Exception e){
-                assertEquals(CustomerAlreadyRegisteredException.class, e.getClass());
-                assertEquals("CPF ja cadastrado", e.getMessage());
-            }
-
+            assertThrows(CustomerAlreadyRegisteredException.class, () -> {
+                service.createCustomer(customerIndividual);
+            });
         }
 
         @Test
         @DisplayName("Deve lançar exceçãpo ao tentar cadastrar CNPJ já cadastrado")
         void createCorporateCustomerAlreadyRegistered() {
-            when (repository.findByDocument(anyString())).thenThrow(new CustomerAlreadyRegisteredException("CNPJ ja cadastrado"));
+            when(repository.findByDocument("19132741000154"))
+                    .thenReturn(customerCorporate);
 
-            try{
-                repository.findByDocument("19132741000154");
-            }catch (Exception e){
-                assertEquals(CustomerAlreadyRegisteredException.class, e.getClass());
-                assertEquals("CNPJ ja cadastrado", e.getMessage());
-            }
+            assertThrows(CustomerAlreadyRegisteredException.class, () -> {
+                service.createCustomer(customerCorporate);
+            });
 
         }
 
 
-
     }
-
 
 
     @Nested
@@ -142,11 +134,11 @@ class CustomerServiceImplTest {
 
             var updateCustomer = Customer.builder()
                     .name("John Doe")
-                   .document("00146729013")
-                   .type(CustomerType.INDIVIDUAL)
-                   .phone("12345678901")
-                   .email("j@j.com")
-                   .address(address)
+                    .document("00146729013")
+                    .type(CustomerType.INDIVIDUAL)
+                    .phone("12345678901")
+                    .email("j@j.com")
+                    .address(address)
                     .build();
 
             given(repository.findById(customerId)).willReturn(Optional.of(customerIndividual));
@@ -165,6 +157,7 @@ class CustomerServiceImplTest {
             assertEquals(address, updatedCustomer.getAddress());
 //
         }
+
         @Test
         @DisplayName("Deve lançar exceção ao atualizar cliente inexistente")
         void updateNonExistentCustomer() {
@@ -177,29 +170,42 @@ class CustomerServiceImplTest {
 
 
     }
-    @Test
-    void updateCustomer() {
-    }
 
-    @Test
-    void findCustomerById() {
-    }
+    @Nested
+    @DisplayName("Search")
+    class Search {
 
-    @Test
-    void findCustomerByDocument() {
-    }
 
-    @Test
-    void findAllCustomers() {
-    }
+        @Test
+        @DisplayName("Deve encontrar um cliente pelo ID")
+        void findCustomerById() {
+            UUID customerId = UUID.randomUUID();
+            when(repository.findById(customerId))
+                    .thenReturn(Optional.of(customerIndividual));
 
-    @Test
-    void findCustomerByName() {
+            Customer foundCustomer = service.findCustomerById(customerId);
+
+            assertNotNull(foundCustomer);
+            assertNotNull(foundCustomer.getId());
+            assertEquals("John Individual", foundCustomer.getName());
+            assertEquals(address, foundCustomer.getAddress());
+        }
+
+
+
+        @Test
+        void findAllCustomers() {
+        }
+
+        @Test
+        void findCustomerByName() {
+        }
+
     }
 
     private void startCustomer() {
-         address = new Address("street", "number", "complement", "neighborhood", "city", "state", "zipCode");
-         customerIndividual = new Customer("John Individual", "00146729013", CustomerType.INDIVIDUAL, "12345678901", "j@j.com", address);
-         customerCorporate = new Customer("John Corporate", "19132741000154", CustomerType.CORPORATE, "12345678901", "j@j.com", address);
+        address = new Address("street", "number", "complement", "neighborhood", "city", "state", "zipCode");
+        customerIndividual = new Customer("John Individual", "00146729013", CustomerType.INDIVIDUAL, "12345678901", "j@j.com", address);
+        customerCorporate = new Customer("John Corporate", "19132741000154", CustomerType.CORPORATE, "12345678901", "j@j.com", address);
     }
 }
