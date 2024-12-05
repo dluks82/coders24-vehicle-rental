@@ -23,7 +23,7 @@ class CustomerControllerTest {
     @InjectMocks
     private CustomerController customerController;
     @Mock
-    private CustomerService customerService;
+    private CustomerService service;
 
     private Customer customer;
 
@@ -44,17 +44,26 @@ class CustomerControllerTest {
     @Test
     void createCustomer() {
 
-        when(customerService.createCustomer(customer)).thenReturn(customer);
+        when(service.createCustomer(customer)).thenReturn(customer);
 
         ResponseEntity<Customer> response = customerController.createCustomer(customer);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(customer, response.getBody());
-        verify(customerService).createCustomer(customer);
+        verify(service).createCustomer(customer);
     }
 
     @Test
     void updateCustomer() {
+        UUID id = UUID.randomUUID();
+
+        when(service.updateCustomer(id, customer)).thenReturn(customer);
+
+        ResponseEntity<Customer> response = customerController.updateCustomer(id, customer);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(customer, response.getBody());
+        verify(service).updateCustomer(id, customer);
 
     }
 
