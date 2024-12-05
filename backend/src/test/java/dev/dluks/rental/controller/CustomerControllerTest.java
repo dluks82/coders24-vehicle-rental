@@ -105,4 +105,16 @@ class CustomerControllerTest {
         verify(service).findAllCustomers();
     }
 
+    @Test
+    void findCustomerByName() {
+        String name = "John Doe";
+        List<Customer> customers = Arrays.asList(customer, customer);
+        when(service.findCustomerByName(name)).thenReturn(customers);
+
+        ResponseEntity<List<Customer>> response = customerController.findCustomerByName(name);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(customers, response.getBody());
+        verify(service).findCustomerByName(name);
+    }
 }
