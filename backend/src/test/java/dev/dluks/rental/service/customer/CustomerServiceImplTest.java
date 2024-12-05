@@ -16,12 +16,15 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
+
+import java.util.Optional;
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 class CustomerServiceImplTest {
@@ -135,6 +138,32 @@ class CustomerServiceImplTest {
         @Test
         @DisplayName("Deve atualizar um cliente existente com sucesso")
         void updateCustomerSucess() {
+            UUID customerId = UUID.randomUUID();
+
+            var updateCustomer = Customer.builder()
+                    .name("John Doe")
+                   .document("00146729013")
+                   .type(CustomerType.INDIVIDUAL)
+                   .phone("12345678901")
+                   .email("j@j.com")
+                   .address(address)
+                    .build();
+
+            given(repository.findById(customerId)).willReturn(Optional.of(customerIndividual));
+            given(repository.save(any(Customer.class))).willReturn(customerIndividual);
+
+            var updatedCustomer = service.updateCustomer(customerId, updateCustomer);
+
+            assertNotNull(updatedCustomer);
+            assertNotNull(updatedCustomer.getId());
+            assertEquals(Customer.class, updatedCustomer.getClass());
+            assertEquals("00146729013", updatedCustomer.getDocument());
+            assertEquals(CustomerType.INDIVIDUAL, updatedCustomer.getType());
+            assertEquals("John Doe", updatedCustomer.getName());
+            assertEquals("12345678901", updatedCustomer.getPhone());
+            assertEquals("j@j.com", updatedCustomer.getEmail());
+            assertEquals(address, updatedCustomer.getAddress());
+//
         }
 
 
