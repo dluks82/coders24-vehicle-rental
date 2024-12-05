@@ -220,7 +220,17 @@ class CustomerServiceImplTest {
             assertEquals(2, foundCustomers.size());
         }
 
+        @Test
+        void findCustomerByName() {
+            List<Customer> customers = Arrays.asList(customerIndividual);
+            when(repository.findByNameContainingIgnoreCase("John")).thenReturn(customers);
 
+            List<Customer> foundCustomers = service.findCustomerByName("John");
+
+            assertNotNull(foundCustomers);
+            assertEquals(1, foundCustomers.size());
+            assertEquals("John Individual", foundCustomers.get(0).getName());
+        }
 
     }
 
