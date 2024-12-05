@@ -191,7 +191,20 @@ class CustomerServiceImplTest {
             assertEquals(address, foundCustomer.getAddress());
         }
 
+        @Test
+        @DisplayName("Deve encontrar um cliente pelo CPF")
+        void findCustomerByDocument() {
+            when(repository.findByDocument("12345678900"))
+                    .thenReturn(customerIndividual);
 
+            Customer foundCustomer = service.findCustomerByDocument("12345678900");
+
+            assertNotNull(foundCustomer);
+            assertEquals("John Individual", foundCustomer.getName());
+            assertEquals(address, foundCustomer.getAddress());
+            assertEquals(CustomerType.INDIVIDUAL, foundCustomer.getType());
+            assertEquals(Customer.class, foundCustomer.getClass());
+        }
 
         @Test
         void findAllCustomers() {
