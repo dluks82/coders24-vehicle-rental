@@ -12,6 +12,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -79,13 +81,28 @@ class CustomerControllerTest {
         verify(service).findCustomerById(id);
     }
 
+    @Test
+    void findCustomerByDocument() {
+        String document = "12345";
+        when(service.findCustomerByDocument(document)).thenReturn(customer);
 
+        ResponseEntity<Customer> response = customerController.findCustomerByDocument(document);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(customer, response.getBody());
+        verify(service).findCustomerByDocument(document);
+    }
 
     @Test
     void findAllCustomers() {
+        List<Customer> customers = Arrays.asList(customer, customer);
+        when(service.findAllCustomers()).thenReturn(customers);
+
+        ResponseEntity<List<Customer>> response = customerController.findAllCustomers();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(customers, response.getBody());
+        verify(service).findAllCustomers();
     }
 
-    @Test
-    void findCustomerByName() {
-    }
 }
