@@ -165,6 +165,15 @@ class CustomerServiceImplTest {
             assertEquals(address, updatedCustomer.getAddress());
 //
         }
+        @Test
+        @DisplayName("Deve lançar exceção ao atualizar cliente inexistente")
+        void updateNonExistentCustomer() {
+            when(repository.findByDocument(anyString())).thenReturn(null);
+
+            assertThrows(RuntimeException.class, () -> {
+                service.updateCustomer(customerIndividual.getId(), customerIndividual);
+            });
+        }
 
 
     }
