@@ -9,7 +9,7 @@ public interface CustomerService {
 
     Customer createCustomer(Customer customer);
 
-    Customer updateCustomer(Customer customer);
+    Customer updateCustomer(UUID id, Customer customer);
 
     Customer findCustomerById(UUID id);
 
