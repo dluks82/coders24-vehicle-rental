@@ -26,6 +26,7 @@ class CustomerControllerTest {
     private CustomerService service;
 
     private Customer customer;
+   private  UUID id = UUID.randomUUID();
 
     @BeforeEach
     void setUp() {
@@ -55,7 +56,6 @@ class CustomerControllerTest {
 
     @Test
     void updateCustomer() {
-        UUID id = UUID.randomUUID();
 
         when(service.updateCustomer(id, customer)).thenReturn(customer);
 
@@ -69,11 +69,17 @@ class CustomerControllerTest {
 
     @Test
     void findCustomerById() {
+
+        when(service.findCustomerById(id)).thenReturn(customer);
+
+        ResponseEntity<Customer> response = customerController.findCustomerById(id);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(customer, response.getBody());
+        verify(service).findCustomerById(id);
     }
 
-    @Test
-    void findCustomerByDocument() {
-    }
+
 
     @Test
     void findAllCustomers() {
