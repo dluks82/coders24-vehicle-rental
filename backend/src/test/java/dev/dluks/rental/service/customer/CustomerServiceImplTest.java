@@ -17,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -192,7 +194,7 @@ class CustomerServiceImplTest {
         }
 
         @Test
-        @DisplayName("Deve encontrar um cliente pelo CPF")
+        @DisplayName("Deve encontrar um cliente pelo Documento")
         void findCustomerByDocument() {
             when(repository.findByDocument("12345678900"))
                     .thenReturn(customerIndividual);
@@ -207,12 +209,18 @@ class CustomerServiceImplTest {
         }
 
         @Test
+        @DisplayName("Deve encontrar todos os clientes")
         void findAllCustomers() {
+            List<Customer> customers = Arrays.asList(customerIndividual, customerCorporate);
+            when(repository.findAll()).thenReturn(customers);
+
+            List<Customer> foundCustomers = service.findAllCustomers();
+
+            assertNotNull(foundCustomers);
+            assertEquals(2, foundCustomers.size());
         }
 
-        @Test
-        void findCustomerByName() {
-        }
+
 
     }
 
