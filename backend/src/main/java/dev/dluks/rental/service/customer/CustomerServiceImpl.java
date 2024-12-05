@@ -46,16 +46,18 @@ public class CustomerServiceImpl implements CustomerService {
         return repository.save(customer);
     }
 
-    @Override
-    public Customer updateCustomer(Customer customer) {
-        Customer existCustomer = repository.findByDocument(customer.getDocument());
+
+    public Customer updateCustomer(UUID id, Customer customer) {
+        Customer existCustomer = repository.findById(id).orElse(null);
 
         if(existCustomer == null){
             throw new RuntimeException("Nenhum Cliente Encontrado");
         }
+
         existCustomer.setName(customer.getName());
         existCustomer.setPhone(customer.getPhone());
         existCustomer.setEmail(customer.getEmail());
+        existCustomer.setAddress(customer.getAddress());
         return repository.save(existCustomer);
     }
 
