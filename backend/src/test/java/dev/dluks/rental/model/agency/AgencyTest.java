@@ -1,6 +1,5 @@
 package dev.dluks.rental.model.agency;
 
-import dev.dluks.rental.model.address.Address;
 import dev.dluks.rental.support.BaseUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,34 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class AgencyTest extends BaseUnitTest {
 
     private Agency agency;
-    private Address address;
-
-    private final String name = "Agency Name";
-    private final String document = "12345678000195";
-    private final String phone = "1234567890";
-    private final String email = "agency@email.com";
 
     @BeforeEach
     void setUp() {
-
-        address = Address.builder()
-                .street("Pine Street")
-                .number("11")
-                .complement("Penthouse")
-                .neighborhood("Old Town")
-                .city("Chicago")
-                .state("IL")
-                .zipCode("60614-111")
-                .build();
-
-        agency = Agency.builder()
-                .name(name)
-                .document(document)
-                .phone(phone)
-                .email(email)
-                .address(address)
-                .build();
-
+        agency = AgencyFactory.createAgency();
     }
 
     @Nested
@@ -50,9 +25,6 @@ class AgencyTest extends BaseUnitTest {
         @Test
         @DisplayName("should create agency with valid data")
         void shouldCreateAgencyWithValidData() {
-            // given
-
-            // then
             assertAll(
                     () -> assertNotNull(agency.getId()),
                     () -> assertEquals("Agency Name", agency.getName()),
@@ -70,11 +42,11 @@ class AgencyTest extends BaseUnitTest {
             // then
             assertThrows(IllegalArgumentException.class,
                     () -> new Agency(
-                            name,
+                            agency.getName(),
                             invalidDocument,
-                            phone,
-                            email,
-                            address
+                            agency.getPhone(),
+                            agency.getEmail(),
+                            agency.getAddress()
                     )
             );
         }

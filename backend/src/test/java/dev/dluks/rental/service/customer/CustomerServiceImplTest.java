@@ -2,6 +2,7 @@ package dev.dluks.rental.service.customer;
 
 import dev.dluks.rental.exception.CustomerAlreadyRegisteredException;
 import dev.dluks.rental.model.address.Address;
+import dev.dluks.rental.model.address.AddressFactory;
 import dev.dluks.rental.model.customer.Customer;
 import dev.dluks.rental.model.customer.CustomerType;
 import dev.dluks.rental.repository.CustomerRepository;
@@ -9,12 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 
 import java.util.Arrays;
@@ -28,7 +26,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-
 class CustomerServiceImplTest {
 
     @InjectMocks
@@ -41,17 +38,17 @@ class CustomerServiceImplTest {
     private Customer customerCorporate;
     private Address address;
 
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        startCustomer();
+        customerIndividual = CustomerFactory.createIndividualCustomer();
+        customerCorporate = CustomerFactory.createCorporateCustomer();
+        address = AddressFactory.createAddress();
     }
 
     @Nested
     @DisplayName("Creation")
     class Creation {
-
 
         @Test
         @DisplayName("Deve Criar um cliente individual com sucesso")
@@ -73,7 +70,7 @@ class CustomerServiceImplTest {
             assertEquals("John Individual", createdCustomer.getName());
             assertEquals("12345678901", createdCustomer.getPhone());
             assertEquals("j@j.com", createdCustomer.getEmail());
-            assertEquals(address, createdCustomer.getAddress());
+            assertEquals(0, address.compareTo(createdCustomer.getAddress()));
         }
 
         @Test
@@ -96,11 +93,11 @@ class CustomerServiceImplTest {
             assertEquals("John Corporate", createdCustomer.getName());
             assertEquals("12345678901", createdCustomer.getPhone());
             assertEquals("j@j.com", createdCustomer.getEmail());
-            assertEquals(address, createdCustomer.getAddress());
+            assertEquals(0, address.compareTo(createdCustomer.getAddress()));
         }
 
         @Test
-        @DisplayName("Deve lançar exceçãpo ao tentar cadastrar CPF já cadastrado")
+        @DisplayName("Deve lançar exceção ao tentar cadastrar CPF já cadastrado")
         void createIndividualCustomerAlreadyRegistered() {
             when(repository.findByDocument("00146729013"))
                     .thenReturn(customerIndividual);
@@ -111,7 +108,7 @@ class CustomerServiceImplTest {
         }
 
         @Test
-        @DisplayName("Deve lançar exceçãpo ao tentar cadastrar CNPJ já cadastrado")
+        @DisplayName("Deve lançar exceção ao tentar cadastrar CNPJ já cadastrado")
         void createCorporateCustomerAlreadyRegistered() {
             when(repository.findByDocument("19132741000154"))
                     .thenReturn(customerCorporate);
@@ -119,12 +116,8 @@ class CustomerServiceImplTest {
             assertThrows(CustomerAlreadyRegisteredException.class, () -> {
                 service.createCustomer(customerCorporate);
             });
-
         }
-
-
     }
-
 
     @Nested
     @DisplayName("Update")
@@ -157,7 +150,6 @@ class CustomerServiceImplTest {
             assertEquals("12345678901", updatedCustomer.getPhone());
             assertEquals("j@j.com", updatedCustomer.getEmail());
             assertEquals(address, updatedCustomer.getAddress());
-//
         }
 
         @Test
@@ -169,14 +161,11 @@ class CustomerServiceImplTest {
                 service.updateCustomer(customerIndividual.getId(), customerIndividual);
             });
         }
-
-
     }
 
     @Nested
     @DisplayName("Search")
     class Search {
-
 
         @Test
         @DisplayName("Deve encontrar um cliente pelo ID")
@@ -190,7 +179,7 @@ class CustomerServiceImplTest {
             assertNotNull(foundCustomer);
             assertNotNull(foundCustomer.getId());
             assertEquals("John Individual", foundCustomer.getName());
-            assertEquals(address, foundCustomer.getAddress());
+            assertEquals(0, address.compareTo(foundCustomer.getAddress()));
         }
 
         @Test
@@ -203,7 +192,7 @@ class CustomerServiceImplTest {
 
             assertNotNull(foundCustomer);
             assertEquals("John Individual", foundCustomer.getName());
-            assertEquals(address, foundCustomer.getAddress());
+            assertEquals(0, address.compareTo(foundCustomer.getAddress()));
             assertEquals(CustomerType.INDIVIDUAL, foundCustomer.getType());
             assertEquals(Customer.class, foundCustomer.getClass());
         }
@@ -231,12 +220,5 @@ class CustomerServiceImplTest {
             assertEquals(1, foundCustomers.size());
             assertEquals("John Individual", foundCustomers.get(0).getName());
         }
-
-    }
-
-    private void startCustomer() {
-        address = new Address("street", "number", "complement", "neighborhood", "city", "state", "zipCode");
-        customerIndividual = new Customer("John Individual", "00146729013", CustomerType.INDIVIDUAL, "12345678901", "j@j.com", address);
-        customerCorporate = new Customer("John Corporate", "19132741000154", CustomerType.CORPORATE, "12345678901", "j@j.com", address);
     }
 }

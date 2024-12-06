@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Address {
+public class Address implements Comparable<Address> {
 
     @Column(name = "street", nullable = false, length = 200)
     private String street;
@@ -96,4 +96,39 @@ public class Address {
         this.zipCode = validateFieldOrThrow(zipCode);
     }
 
+    @Override
+    public int compareTo(Address o) {
+        if (o == null) {
+            throw new NullPointerException("Cannot compare to null");
+        }
+
+        int result;
+
+        result = this.state.compareTo(o.state);
+        if (result != 0) return result;
+
+        result = this.city.compareTo(o.city);
+        if (result != 0) return result;
+
+        result = this.neighborhood.compareTo(o.neighborhood);
+        if (result != 0) return result;
+
+        result = this.street.compareTo(o.street);
+        if (result != 0) return result;
+
+        result = this.number.compareTo(o.number);
+        if (result != 0) return result;
+
+        result = this.zipCode.compareTo(o.zipCode);
+        if (result != 0) return result;
+
+        return compareNullables(this.complement, o.complement);
+    }
+
+    private int compareNullables(String a, String b) {
+        if (a == null && b == null) return 0;
+        if (a == null) return -1;
+        if (b == null) return 1;
+        return a.compareTo(b);
+    }
 }
