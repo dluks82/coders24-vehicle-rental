@@ -1,8 +1,5 @@
-package dev.dluks.rental.model;
+package dev.dluks.rental.model.vehicle;
 
-import dev.dluks.rental.model.vehicle.Vehicle;
-import dev.dluks.rental.model.vehicle.VehicleStatus;
-import dev.dluks.rental.model.vehicle.VehicleType;
 import dev.dluks.rental.support.BaseUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,13 +19,9 @@ class VehicleTest extends BaseUnitTest {
 
     @BeforeEach
     void setUp() {
-        car = Vehicle.builder()
-                .plate("ABC1234")
-                .name("Civic")
-                .type(VehicleType.CAR)
-                .build();
-        motorcycle = new Vehicle("XYZ9876", "Harley Davidson", VehicleType.MOTORCYCLE);
-        truck = new Vehicle("DEF5678", "Volvo", VehicleType.TRUCK);
+        car = VehicleFactory.createCarVehicle();
+        motorcycle = VehicleFactory.createMotorcycleVehicle();
+        truck = VehicleFactory.createTruckVehicle();
     }
 
     @Nested
