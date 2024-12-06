@@ -2,6 +2,7 @@ package dev.dluks.rental.service.customer;
 
 import dev.dluks.rental.exception.CustomerAlreadyRegisteredException;
 import dev.dluks.rental.model.address.Address;
+import dev.dluks.rental.model.address.AddressFactory;
 import dev.dluks.rental.model.customer.Customer;
 import dev.dluks.rental.model.customer.CustomerType;
 import dev.dluks.rental.repository.CustomerRepository;
@@ -42,6 +43,7 @@ class CustomerServiceImplTest {
         MockitoAnnotations.openMocks(this);
         customerIndividual = CustomerFactory.createIndividualCustomer();
         customerCorporate = CustomerFactory.createCorporateCustomer();
+        address = AddressFactory.createAddress();
     }
 
     @Nested
@@ -68,7 +70,7 @@ class CustomerServiceImplTest {
             assertEquals("John Individual", createdCustomer.getName());
             assertEquals("12345678901", createdCustomer.getPhone());
             assertEquals("j@j.com", createdCustomer.getEmail());
-            assertEquals(address, createdCustomer.getAddress());
+            assertEquals(0, address.compareTo(createdCustomer.getAddress()));
         }
 
         @Test
@@ -91,7 +93,7 @@ class CustomerServiceImplTest {
             assertEquals("John Corporate", createdCustomer.getName());
             assertEquals("12345678901", createdCustomer.getPhone());
             assertEquals("j@j.com", createdCustomer.getEmail());
-            assertEquals(address, createdCustomer.getAddress());
+            assertEquals(0, address.compareTo(createdCustomer.getAddress()));
         }
 
         @Test
@@ -177,7 +179,7 @@ class CustomerServiceImplTest {
             assertNotNull(foundCustomer);
             assertNotNull(foundCustomer.getId());
             assertEquals("John Individual", foundCustomer.getName());
-            assertEquals(address, foundCustomer.getAddress());
+            assertEquals(0, address.compareTo(foundCustomer.getAddress()));
         }
 
         @Test
@@ -190,7 +192,7 @@ class CustomerServiceImplTest {
 
             assertNotNull(foundCustomer);
             assertEquals("John Individual", foundCustomer.getName());
-            assertEquals(address, foundCustomer.getAddress());
+            assertEquals(0, address.compareTo(foundCustomer.getAddress()));
             assertEquals(CustomerType.INDIVIDUAL, foundCustomer.getType());
             assertEquals(Customer.class, foundCustomer.getClass());
         }

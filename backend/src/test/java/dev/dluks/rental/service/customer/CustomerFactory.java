@@ -15,17 +15,17 @@ public class CustomerFactory {
                 .document("00146729013")
                 .type(CustomerType.INDIVIDUAL)
                 .phone("12345678901")
-                .email("")
+                .email("j@j.com")
                 .address(address).build();
     }
 
     public static Customer createCorporateCustomer() {
         return Customer.builder()
-                .name("John Individual")
+                .name("John Corporate")
                 .document("19132741000154")
                 .type(CustomerType.CORPORATE)
                 .phone("12345678901")
-                .email("")
+                .email("j@j.com")
                 .address(address).build();
     }
 }
