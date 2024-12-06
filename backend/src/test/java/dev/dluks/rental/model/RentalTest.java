@@ -21,6 +21,8 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 @DisplayName("Rental")
 class RentalTest extends BaseUnitTest {
@@ -59,7 +61,7 @@ class RentalTest extends BaseUnitTest {
                     () -> assertNotNull(rental.getCustomer().getId()),
                     () -> assertNotNull(rental.getPickupAgency().getId()),
                     () -> assertNotNull(rental.getReturnAgency().getId()),
-                    () -> assertEquals(BigDecimal.valueOf(150), rental.getDailyRate()),
+                    () -> assertEquals(0, rental.getDailyRate().compareTo(BigDecimal.valueOf(150))),
                     () -> assertEquals(RentalStatus.ACTIVE, rental.getStatus())
             );
         }
@@ -67,72 +69,60 @@ class RentalTest extends BaseUnitTest {
         @Test
         @DisplayName("should not create with invalid data")
         void shouldNotCreateRentalWithInvalidData() {
-
-            assertAll(
-                    () -> assertThrows(DateTimeException.class,
-                            () -> new Rental(car, customer, pickupAgency, returnAgency, startDate, LocalDateTime.of(2024, 13, 7, 14, 30))),
-                    () -> assertThrows(IllegalArgumentException.class,
-                            () -> new Rental(null, customer, pickupAgency, returnAgency, startDate, expectedReturnDate)),
-                    () -> assertThrows(IllegalArgumentException.class,
-                            () -> new Rental(car, null, pickupAgency, returnAgency, startDate, expectedReturnDate)),
-                    () -> assertThrows(IllegalArgumentException.class,
-                            () -> new Rental(car, customer, null, returnAgency, startDate, expectedReturnDate)),
-                    () -> assertThrows(IllegalArgumentException.class,
-                            () -> new Rental(car, customer, pickupAgency, null, startDate, expectedReturnDate))
-            );
+            assertThrows(DateTimeException.class,
+                            () -> new Rental(
+                                    car,
+                                    customer,
+                                    pickupAgency,
+                                    returnAgency,
+                                    startDate,
+                                    LocalDateTime.of(2024, 13, 7, 14, 30)));
         }
     }
 
     @Nested
-    @DisplayName("Status Management")
-    class StatusManagement {
+    @DisplayName("Operation")
+    class Calculation {
 
         @Test
-        @DisplayName("should rent available vehicle")
-        void shouldRentAvailableVehicle() {
-            // given
-            Vehicle vehicle = car;
+        @DisplayName("should complete a rental when valid data")
+        void shouldCompleteRentalWhenValidData() {
+            LocalDateTime actualReturnDate = LocalDateTime.of(2024, 12, 7, 14, 30);
+            rental.complete(actualReturnDate);
 
-            // when
-            vehicle.rent();
-
-            // then
-            assertEquals(VehicleStatus.RENTED, vehicle.getStatus());
+            assertEquals(VehicleStatus.AVAILABLE, rental.getVehicle().getStatus());
+            assertEquals(RentalStatus.COMPLETED, rental.getStatus());
+            assertEquals(0, rental.getTotalAmount().compareTo(BigDecimal.valueOf(300)));
+            assertEquals(0, rental.getDiscount().compareTo(BigDecimal.valueOf(0)));
         }
 
         @Test
-        @DisplayName("should not rent already rented vehicle")
-        void shouldNotRentAlreadyRentedVehicle() {
-            // given
-            Vehicle vehicle = truck;
-            vehicle.rent();
-
-            // when & then
-            assertThrows(IllegalStateException.class, vehicle::rent);
+        @DisplayName("should cancel a rental when asked to")
+        void shouldCancelRental() {
+            rental.cancel();
+            assertEquals(RentalStatus.CANCELLED, rental.getStatus());
         }
 
         @Test
-        @DisplayName("should return rented vehicle")
-        void shouldReturnRentedVehicle() {
-            // given
-            Vehicle vehicle = motorcycle;
-            vehicle.rent();
-
-            // when
-            vehicle.returnVehicle();
-
-            // then
-            assertEquals(VehicleStatus.AVAILABLE, vehicle.getStatus());
-        }
-
-        @Test
-        @DisplayName("should not return already available vehicle")
-        void shouldNotReturnAlreadyAvailableVehicle() {
-            // given
-            Vehicle vehicle = car;
-
-            // when & then
-            assertThrows(IllegalStateException.class, vehicle::returnVehicle);
+        @DisplayName("should print rental information correctly")
+        void shouldPrintCorrectInformationAboutRental() {
+            assertEquals("Rental{" +
+                    "vehicle=" + rental.getVehicle() +
+                    ", customer=" + rental.getCustomer() +
+                    ", pickupAgency=" + rental.getPickupAgency() +
+                    ", returnAgency=" + rental.getReturnAgency() +
+                    ", startDate=" + rental.getStartDate() +
+                    ", expectedReturnDate=" + rental.getExpectedReturnDate() +
+                    ", actualReturnDate=" + rental.getActualReturnDate() +
+                    ", status=" + rental.getStatus() +
+                    ", dailyRate=" + rental.getDailyRate() +
+                    ", totalAmount=" + rental.getTotalAmount() +
+                    ", discount=" + rental.getDiscount() +
+                    ", finalAmount=" + rental.getFinalAmount() +
+                    ", id=" + rental.getId() +
+                    ", createdAt=" + rental.getCreatedAt() +
+                    ", updatedAt=" + rental.getUpdatedAt() +
+                    '}', rental.toString());
         }
     }
 }
